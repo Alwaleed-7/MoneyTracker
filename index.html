@@ -21,6 +21,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans antialiased">
 
+    <!-- Navbar -->
     <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2 text-primary dark:text-indigo-400">
@@ -37,6 +38,7 @@
 
     <main class="max-w-6xl mx-auto p-4 mt-4">
         
+        <!-- ================= AUTH SECTION ================= -->
         <section id="auth-section" class="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-i18n="login_title">Welcome Back</h2>
@@ -51,39 +53,58 @@
                 </div>
             </div>
         </section>
-
+        <!-- ================= DASHBOARD SECTION ================= -->
         <section id="dashboard-section" class="hidden">
+            <!-- Tab Navigation -->
             <div class="flex overflow-x-auto hide-scroll space-x-1 rtl:space-x-reverse bg-gray-200 dark:bg-gray-800 p-1 rounded-xl mb-6 max-w-fit" id="tab-nav-container">
                 <button data-tab="overview" class="tab-btn active px-6 py-2.5 rounded-lg text-sm font-semibold bg-white dark:bg-gray-700 shadow text-primary dark:text-indigo-400 transition whitespace-nowrap" data-i18n="tab_overview">Overview</button>
-                <button data-tab="fixed" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_fixed">Setup & Fixed Bills</button>
+                <button data-tab="fixed" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_fixed">Setup & Budgets</button>
                 <button data-tab="transactions" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_transactions">Daily Transactions</button>
+                <button data-tab="history" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_history">History</button>
             </div>
 
+            <!-- TAB 1: OVERVIEW -->
             <div id="tab-overview" class="space-y-6 tab-content block">
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 rounded-2xl shadow-lg text-white">
-                    <h3 class="font-bold flex items-center gap-2 mb-2"><span class="text-xl">✨</span> <span data-i18n="ai_insights">Predictive Insights</span></h3>
-                    <p id="insight-text" class="text-sm text-indigo-100 leading-relaxed" data-i18n="insight_empty">Add your salary and log some transactions to see your financial forecast.</p>
+                <!-- Month Header & Controls -->
+                <div class="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium" data-i18n="current_month">Current Month</p>
+                        <h2 id="display-month" class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">--</h2>
+                    </div>
+                    <button id="close-month-btn" class="mt-4 md:mt-0 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold px-6 py-2.5 rounded-xl hover:bg-gray-700 dark:hover:bg-gray-200 transition shadow-md" data-i18n="close_month">Close Month & Start New</button>
                 </div>
+
+                <!-- Main Metrics -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 text-gray-900 dark:text-white"><svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM2 9v5a2 2 0 002 2h12a2 2 0 002-2V9H2z"></path></svg></div>
                         <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="monthly_income">Monthly Income</h3>
                         <p class="text-3xl font-bold mt-2"><span id="display-salary">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="total_fixed">Fixed + Yearly Commitments</h3>
-                        <p class="text-3xl font-bold mt-2 text-red-500"><span id="display-fixed">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="total_spent">Total Spent & Saved</h3>
+                        <p class="text-3xl font-bold mt-2 text-red-500"><span id="display-spent">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="available_spend">Remaining Balance</h3>
-                        <p class="text-3xl font-bold mt-2 text-primary"><span id="display-remaining">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                    <div class="bg-gradient-to-br from-primary to-primaryHover p-6 rounded-2xl shadow-lg text-white relative">
+                        <h3 class="text-sm font-semibold text-indigo-100" data-i18n="available_spend">Unallocated Money</h3>
+                        <p class="text-3xl font-bold mt-2"><span id="display-remaining">0</span> <span class="text-sm text-indigo-200" data-i18n="currency">SAR</span></p>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="text-lg font-bold mb-4" data-i18n="analytics">Spending Breakdown</h3>
-                    <div class="h-72 w-full relative"><canvas id="expenseChart"></canvas></div>
+
+                <!-- Budget Progress & Charts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-bold mb-4" data-i18n="category_budgets">Category Budgets</h3>
+                        <div id="budget-progress-container" class="space-y-5"></div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-bold mb-4" data-i18n="analytics">Spending Breakdown</h3>
+                        <div class="h-64 w-full relative"><canvas id="expenseChart"></canvas></div>
+                    </div>
                 </div>
             </div>
 
+            <!-- TAB 2: SETUP & BUDGETS -->
             <div id="tab-fixed" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-4 items-end">
                     <div class="flex-1 w-full">
@@ -92,28 +113,31 @@
                     </div>
                     <button id="save-salary-btn" class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-primaryHover transition w-full md:w-auto disabled:opacity-50" data-i18n="save">Save</button>
                 </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> <span data-i18n="monthly_bills">Monthly Bills</span></h3>
+                        <h3 class="text-lg font-bold mb-1 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> <span data-i18n="monthly_bills">Monthly Budgets</span></h3>
+                        <p class="text-xs text-gray-500 mb-4" data-i18n="budget_desc">Set spending limits for categories.</p>
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="mb-name" placeholder="..." class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
-                            <input type="number" id="mb-amount" placeholder="SAR" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                            <input type="text" id="mb-name" placeholder="Category Name" class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                            <input type="number" id="mb-amount" placeholder="SAR limit" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
                             <button id="add-mb-btn" class="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition disabled:opacity-50">+</button>
                         </div>
                         <ul id="monthly-list" class="space-y-3"></ul>
                     </div>
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> <span data-i18n="yearly_funds">Yearly Funds (Divided by 12)</span></h3>
+                        <h3 class="text-lg font-bold mb-1 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> <span data-i18n="yearly_funds">Yearly Funds</span></h3>
+                        <p class="text-xs text-gray-500 mb-4" data-i18n="yearly_desc">Set aside money monthly for annual payments.</p>
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="yf-name" placeholder="..." class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
-                            <input type="number" id="yf-amount" placeholder="Total" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                            <input type="text" id="yf-name" placeholder="e.g. Car Insurance" class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                            <input type="number" id="yf-amount" placeholder="Total/Yr" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
                             <button id="add-yf-btn" class="bg-purple-500 text-white px-4 rounded-lg hover:bg-purple-600 transition disabled:opacity-50">+</button>
                         </div>
                         <ul id="yearly-list" class="space-y-3"></ul>
                     </div>
                 </div>
             </div>
-
+               <!-- TAB 3: DAILY TRANSACTIONS -->
             <div id="tab-transactions" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold mb-4" data-i18n="log_expense">Log Daily Expense</h3>
@@ -121,12 +145,7 @@
                         <input type="number" id="tx-amount" placeholder="SAR" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
                         <input type="text" id="tx-desc" placeholder="..." class="flex-1 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
                         <select id="tx-category" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
-                            <option value="Food & Dining" data-i18n="cat_food">Food & Dining</option>
-                            <option value="Groceries" data-i18n="cat_grocery">Groceries</option>
-                            <option value="Transport" data-i18n="cat_transport">Transport</option>
-                            <option value="Entertainment" data-i18n="cat_entertainment">Entertainment</option>
-                            <option value="Hardware & Tech" data-i18n="cat_tech">Hardware & Tech</option>
-                            <option value="Other" data-i18n="cat_other">Other</option>
+                            <!-- Injected by JS -->
                         </select>
                         <button id="add-tx-btn" class="bg-green-500 text-white font-bold p-3 rounded-xl hover:bg-green-600 transition shadow-lg disabled:opacity-50" data-i18n="add_record">Add Record</button>
                     </div>
@@ -146,10 +165,28 @@
                     </table>
                 </div>
             </div>
+
+            <!-- TAB 4: HISTORY -->
+            <div id="tab-history" class="space-y-6 tab-content hidden">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-bold mb-4" data-i18n="history_chart">Spending Trends Over Time</h3>
+                    <div class="h-72 w-full relative"><canvas id="historyChart"></canvas></div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[500px]" id="history-table">
+                        <thead>
+                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 text-sm border-b border-gray-100 dark:border-gray-600">
+                                <th class="p-4 font-medium" data-i18n="month">Month</th>
+                                <th class="p-4 font-medium text-right rtl:text-left" data-i18n="total_spent">Total Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-list" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </main>
-
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -165,17 +202,25 @@
             messagingSenderId: "138624267119",
             appId: "1:138624267119:web:8a3b089d04c52a97e2ee9a"
         });
-        
         const auth = getAuth(app);
         const db = getFirestore(app);
         
         let currentUser = null;
-        let userData = { salary: 0, monthlyBills: [], yearlyFunds: [] };
-        let transactionsData = [];
+        let userData = { salary: 0, currentMonth: "", monthlyBills: [], yearlyFunds: [], history: [] };
+        let allTransactionsData = []; 
+        let activeTransactions = [];  
         let currentLang = 'en';
 
+        function getMonthString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
+        function formatMonthDisplay(monthStr) {
+            if(!monthStr) return "--";
+            const [year, month] = monthStr.split('-');
+            const date = new Date(year, parseInt(month)-1);
+            return date.toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US', { month: 'long', year: 'numeric' });
+        }
+
         // ==========================================
-        // 2. BULLETPROOF AUTHENTICATION 
+        // 2. AUTHENTICATION 
         // ==========================================
         const loginBtn = document.getElementById('login-btn');
         const signupBtn = document.getElementById('signup-btn');
@@ -186,13 +231,11 @@
         async function handleAuth(actionType, btnElement) {
             const email = emailInput.value.trim();
             const password = passInput.value.trim();
-            
             errorText.classList.add('hidden');
 
             if (!email || !password) {
                 errorText.innerText = currentLang === 'en' ? "Email and Password are required." : "البريد الإلكتروني وكلمة المرور مطلوبة.";
-                errorText.classList.remove('hidden');
-                return;
+                errorText.classList.remove('hidden'); return;
             }
 
             const originalText = btnElement.innerText;
@@ -200,38 +243,24 @@
             btnElement.disabled = true;
 
             try {
-                if (actionType === 'login') {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                }
-                emailInput.value = '';
-                passInput.value = '';
+                if (actionType === 'login') await signInWithEmailAndPassword(auth, email, password);
+                else await createUserWithEmailAndPassword(auth, email, password);
+                emailInput.value = ''; passInput.value = '';
             } catch (error) {
-                console.error("Firebase Auth Error:", error);
                 let readableError = error.message;
                 if(error.code === 'auth/invalid-credential') readableError = "Wrong email or password.";
-                if(error.code === 'auth/email-already-in-use') readableError = "Email is already registered.";
-                if(error.code === 'auth/network-request-failed') readableError = "Network error. Are you running this file via 'file://' instead of a local server?";
-                
-                errorText.innerText = readableError;
-                errorText.classList.remove('hidden');
+                errorText.innerText = readableError; errorText.classList.remove('hidden');
             } finally {
-                btnElement.innerText = originalText;
-                btnElement.disabled = false;
+                btnElement.innerText = originalText; btnElement.disabled = false;
             }
         }
 
         loginBtn.addEventListener('click', () => handleAuth('login', loginBtn));
         signupBtn.addEventListener('click', () => handleAuth('signup', signupBtn));
-        
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.reload();
-        });
+        document.getElementById('logout-btn').addEventListener('click', async () => { await signOut(auth); window.location.reload(); });
 
         // ==========================================
-        // 3. DATABASE CONNECTION & LISTENERS
+        // 3. DATABASE CONNECTION
         // ==========================================
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -241,25 +270,25 @@
                 document.getElementById('logout-btn').classList.remove('hidden');
                 
                 const userRef = doc(db, "users", user.uid);
-                
                 onSnapshot(userRef, (docSnap) => { 
                     if(docSnap.exists()) { 
                         userData = docSnap.data(); 
+                        if(!userData.currentMonth) {
+                            userData.currentMonth = getMonthString();
+                            setDoc(userRef, { currentMonth: userData.currentMonth }, {merge: true});
+                        }
                     } else {
-                        setDoc(userRef, { salary: 0, monthlyBills: [], yearlyFunds: [] })
-                            .catch(err => alert("Database creation failed. Check Firestore Security Rules."));
+                        userData = { salary: 0, currentMonth: getMonthString(), monthlyBills: [], yearlyFunds: [], history: [] };
+                        setDoc(userRef, userData).catch(err => alert("DB Creation failed check Rules."));
                     }
-                    updateUI(); 
-                }, (error) => {
-                    alert("Cannot read database. Check Firestore Rules!");
-                    console.error(error);
+                    filterTransactions(); updateUI(); 
                 });
                 
                 const txRef = query(collection(db, "users", user.uid, "transactions"), orderBy("timestamp", "desc"));
                 onSnapshot(txRef, (snapshot) => {
-                    transactionsData = []; 
-                    snapshot.forEach(doc => transactionsData.push({ id: doc.id, ...doc.data() })); 
-                    updateUI();
+                    allTransactionsData = []; 
+                    snapshot.forEach(doc => allTransactionsData.push({ id: doc.id, ...doc.data() })); 
+                    filterTransactions(); updateUI();
                 });
             } else {
                 currentUser = null; 
@@ -269,20 +298,20 @@
             }
         });
 
+        function filterTransactions() {
+            if(!userData.currentMonth) return;
+            activeTransactions = allTransactionsData.filter(tx => tx.month === userData.currentMonth);
+        }
+
         async function safeDBUpdate(action, buttonToDisable = null) {
             if(!currentUser) return;
             if(buttonToDisable) buttonToDisable.disabled = true;
-            try { 
-                await action(); 
-            } catch(err) { 
-                alert(`Error: ${err.message}`); 
-                console.error(err);
-            } finally {
-                if(buttonToDisable) buttonToDisable.disabled = false;
-            }
+            try { await action(); } catch(err) { alert(`Error: ${err.message}`); console.error(err); } 
+            finally { if(buttonToDisable) buttonToDisable.disabled = false; }
         }
-
-                // --- Data Input Listeners ---
+                    // ==========================================
+        // 4. DATA ACTIONS
+        // ==========================================
         document.getElementById('save-salary-btn').addEventListener('click', (e) => {
             const val = parseFloat(document.getElementById('input-salary').value);
             if(isNaN(val) || val < 0) return;
@@ -320,13 +349,25 @@
             
             safeDBUpdate(async () => {
                 await addDoc(collection(db, "users", currentUser.uid, "transactions"), {
-                    amount, desc, category, timestamp: Date.now(), dateStr: new Date().toLocaleDateString()
+                    amount, desc, category, month: userData.currentMonth, timestamp: Date.now(), dateStr: new Date().toLocaleDateString()
                 });
                 document.getElementById('tx-amount').value = ''; document.getElementById('tx-desc').value = '';
             }, e.target);
         });
 
-        // Event Delegation for Delete Buttons
+        document.getElementById('close-month-btn').addEventListener('click', (e) => {
+            if(!confirm(currentLang === 'en' ? "Close this month and archive the data?" : "إغلاق هذا الشهر وأرشفة البيانات؟")) return;
+            const spentTotal = activeTransactions.reduce((sum, item) => sum + item.amount, 0);
+            const historyEntry = { month: userData.currentMonth, totalSpent: spentTotal, timestamp: Date.now() };
+            const newHistory = [...(userData.history || []), historyEntry];
+            
+            safeDBUpdate(async () => {
+                await setDoc(doc(db, "users", currentUser.uid), { 
+                    history: newHistory, currentMonth: getMonthString() 
+                }, { merge: true });
+            }, e.target);
+        });
+
         document.getElementById('monthly-list').addEventListener('click', (e) => {
             if(!e.target.classList.contains('del-btn')) return;
             const newList = userData.monthlyBills.filter(item => item.id !== e.target.dataset.id);
@@ -341,35 +382,38 @@
             if(!e.target.classList.contains('del-btn')) return;
             safeDBUpdate(async () => { await deleteDoc(doc(db, "users", currentUser.uid, "transactions", e.target.dataset.id)); });
         });
-
-        // ==========================================
-        // 4. TRANSLATION & UI RENDERING
+                    // ==========================================
+        // 5. TRANSLATION & UI RENDERING
         // ==========================================
         const dictionary = {
             en: {
                 app_title: "Maliyat", login_title: "Welcome Back", login: "Sign In", signup: "Register", logout: "Logout",
-                tab_overview: "Overview", tab_fixed: "Setup & Fixed Bills", tab_transactions: "Daily Transactions",
-                ai_insights: "Predictive Insights", monthly_income: "Monthly Income", total_fixed: "Fixed + Yearly Commitments",
-                available_spend: "Remaining Balance", analytics: "Spending Breakdown", monthly_bills: "Monthly Bills",
-                yearly_funds: "Yearly Funds (Divided by 12)", log_expense: "Log Daily Expense", save: "Save", add_record: "Add Record",
+                tab_overview: "Overview", tab_fixed: "Setup & Budgets", tab_transactions: "Daily Transactions", tab_history: "History",
+                current_month: "Current Month", close_month: "Close Month & Start New",
+                monthly_income: "Monthly Income", total_spent: "Total Allocated/Spent",
+                available_spend: "Unallocated Money", category_budgets: "Category Budget Progress", analytics: "Spending Breakdown", 
+                monthly_bills: "Monthly Budgets", budget_desc: "Set spending limits for categories (e.g., Groceries, Rent).",
+                yearly_funds: "Yearly Funds (Divided by 12)", yearly_desc: "Set aside money monthly for big annual payments.",
+                log_expense: "Log Daily Expense", save: "Save", add_record: "Add Record",
                 date: "Date", description: "Description", category: "Category", amount: "Amount", salary_label: "Base Salary (Monthly)",
-                currency: "SAR", insight_empty: "Add your salary and log some transactions to see your financial forecast.",
-                cat_food: "Food & Dining", cat_grocery: "Groceries", cat_transport: "Transport", cat_entertainment: "Entertainment", cat_tech: "Hardware & Tech", cat_other: "Other",
-                chart_fixed: "Fixed & Yearly", warning_overspend: "Warning: At current velocity you are projected to overspend by",
-                surplus_msg: "At your current velocity, you will finish the month with a surplus of",
+                currency: "SAR", insight_empty: "Add your salary and log some transactions.",
+                history_chart: "Spending Trends Over Time", month: "Month",
+                cat_other: "Other", over_budget: "Over Budget!", remaining: "left",
                 per_month: "per month", total_yr: "Total: {x} SAR/yr"
             },
             ar: {
                 app_title: "ماليات", login_title: "مرحباً بك", login: "تسجيل الدخول", signup: "حساب جديد", logout: "تسجيل خروج",
-                tab_overview: "نظرة عامة", tab_fixed: "الالتزامات الثابتة", tab_transactions: "المصروفات اليومية",
-                ai_insights: "التحليلات الذكية", monthly_income: "الدخل الشهري", total_fixed: "الالتزامات الثابتة والسنوية",
-                available_spend: "المبلغ المتبقي", analytics: "تحليل المصروفات", monthly_bills: "الفواتير الشهرية",
-                yearly_funds: "الالتزامات السنوية (مقسمة على 12)", log_expense: "تسجيل مصروف يومي", save: "حفظ", add_record: "إضافة سجل",
+                tab_overview: "نظرة عامة", tab_fixed: "إعداد الميزانيات", tab_transactions: "المصروفات اليومية", tab_history: "السجل التاريخي",
+                current_month: "الشهر الحالي", close_month: "إغلاق الشهر وبدء شهر جديد",
+                monthly_income: "الدخل الشهري", total_spent: "إجمالي المصروفات والالتزامات",
+                available_spend: "المبلغ غير المخصص", category_budgets: "متابعة ميزانية الفئات", analytics: "تحليل المصروفات", 
+                monthly_bills: "الميزانيات الشهرية", budget_desc: "حدد حدود الصرف للفئات (مثل: مقاضي، إيجار).",
+                yearly_funds: "الالتزامات السنوية (مقسمة على 12)", yearly_desc: "ادخر شهرياً للدفعات السنوية الكبيرة.",
+                log_expense: "تسجيل مصروف يومي", save: "حفظ", add_record: "إضافة سجل",
                 date: "التاريخ", description: "الوصف", category: "الفئة", amount: "المبلغ", salary_label: "الراتب الأساسي (شهرياً)",
-                currency: "ريال", insight_empty: "أضف راتبك وسجل بعض المصروفات لرؤية توقعاتك المالية.",
-                cat_food: "مطاعم", cat_grocery: "مقاضي", cat_transport: "مواصلات", cat_entertainment: "ترفيه", cat_tech: "أجهزة وتقنية", cat_other: "أخرى",
-                chart_fixed: "الالتزامات الثابتة", warning_overspend: "تحذير: بمعدل صرفك الحالي، من المتوقع أن تتجاوز ميزانيتك بمقدار",
-                surplus_msg: "بمعدل صرفك الحالي، ستنهي الشهر بفائض قدره",
+                currency: "ريال", insight_empty: "أضف راتبك وسجل بعض المصروفات.",
+                history_chart: "اتجاهات الإنفاق بمرور الوقت", month: "الشهر",
+                cat_other: "أخرى", over_budget: "تجاوز الميزانية!", remaining: "متبقي",
                 per_month: "شهرياً", total_yr: "الإجمالي: {x} ريال/سنوياً"
             }
         };
@@ -380,8 +424,12 @@
             document.documentElement.lang = currentLang;
             e.target.innerText = currentLang === 'ar' ? 'English' : 'عربي';
             document.getElementById('app-title').innerText = dictionary[currentLang].app_title;
+            
             const txTable = document.getElementById('tx-table');
-            if (currentLang === 'ar') txTable.classList.add('text-right'); else txTable.classList.remove('text-right');
+            const historyTable = document.getElementById('history-table');
+            if (currentLang === 'ar') { txTable.classList.add('text-right'); historyTable.classList.add('text-right'); } 
+            else { txTable.classList.remove('text-right'); historyTable.classList.remove('text-right');}
+            
             applyTranslations(); updateUI();
         });
 
@@ -395,19 +443,16 @@
             });
         }
 
-        function getTranslatedCategory(catString) {
-            const map = {
-                "Food & Dining": dictionary[currentLang].cat_food, "Groceries": dictionary[currentLang].cat_grocery,
-                "Transport": dictionary[currentLang].cat_transport, "Entertainment": dictionary[currentLang].cat_entertainment,
-                "Hardware & Tech": dictionary[currentLang].cat_tech, "Other": dictionary[currentLang].cat_other
-            };
-            return map[catString] || catString;
-        }
-
         function updateUI() {
-            const { salary = 0, monthlyBills = [], yearlyFunds = [] } = userData;
+            const { salary = 0, currentMonth = "", monthlyBills = [], yearlyFunds = [], history = [] } = userData;
             const currency = dictionary[currentLang].currency;
             
+            document.getElementById('display-month').innerText = formatMonthDisplay(currentMonth);
+
+            const catSelect = document.getElementById('tx-category');
+            catSelect.innerHTML = monthlyBills.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+            catSelect.innerHTML += `<option value="Other">${dictionary[currentLang].cat_other}</option>`;
+
             document.getElementById('monthly-list').innerHTML = monthlyBills.map(b => `
                 <li class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <span class="font-medium">${b.name}</span>
@@ -420,55 +465,98 @@
                     <div class="flex items-center gap-4 text-right rtl:text-left"><div><span class="text-purple-600 dark:text-purple-400 font-bold font-mono" dir="ltr">${(f.amount/12).toFixed(0)} ${currency}</span><span class="text-xs text-gray-400 block">${dictionary[currentLang].per_month}</span></div><button data-id="${f.id}" class="del-btn text-red-400 hover:text-red-600">✕</button></div>
                 </li>`).join('');
 
-            document.getElementById('transactions-list').innerHTML = transactionsData.map(t => `
+            const spentPerCategory = {};
+            let dailyTotalSpent = 0;
+            activeTransactions.forEach(t => {
+                spentPerCategory[t.category] = (spentPerCategory[t.category] || 0) + t.amount;
+                dailyTotalSpent += t.amount;
+            });
+
+            document.getElementById('budget-progress-container').innerHTML = monthlyBills.map(b => {
+                const spent = spentPerCategory[b.name] || 0;
+                const remaining = b.amount - spent;
+                const isOver = remaining < 0;
+                const pct = Math.min(100, (spent / b.amount) * 100);
+                
+                let textClass = isOver ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
+                let textStr = isOver ? `${dictionary[currentLang].over_budget} (${Math.abs(remaining)} ${currency})` : `${remaining} ${currency} ${dictionary[currentLang].remaining}`;
+                let barColor = isOver ? 'bg-red-500' : (pct > 80 ? 'bg-yellow-500' : 'bg-primary');
+
+                return `
+                <div>
+                    <div class="flex justify-between mb-1 text-sm">
+                        <span class="font-medium text-gray-700 dark:text-gray-200">${b.name}</span>
+                        <span class="${textClass} font-mono" dir="ltr">${spent} / ${b.amount} ${currency}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        <div class="${barColor} h-2.5 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                    </div>
+                    <p class="text-xs mt-1 ${textClass} text-right rtl:text-left">${textStr}</p>
+                </div>`;
+            }).join('');
+
+            document.getElementById('transactions-list').innerHTML = activeTransactions.map(t => {
+                let displayCat = t.category === "Other" ? dictionary[currentLang].cat_other : t.category;
+                return `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/20 transition border-b border-gray-100 dark:border-gray-700/50">
                     <td class="p-4 text-sm text-gray-500">${t.dateStr}</td>
                     <td class="p-4 font-medium">${t.desc}</td>
-                    <td class="p-4"><span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-xs rounded-md">${getTranslatedCategory(t.category)}</span></td>
+                    <td class="p-4"><span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-xs rounded-md">${displayCat}</span></td>
                     <td class="p-4 font-bold text-right rtl:text-left font-mono text-red-500" dir="ltr">- ${t.amount}</td>
                     <td class="p-4 text-center"><button data-id="${t.id}" class="del-btn text-gray-400 hover:text-red-500 font-bold">✕</button></td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('history-list').innerHTML = history.sort((a,b) => b.month.localeCompare(a.month)).map(h => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/20 transition border-b border-gray-100 dark:border-gray-700/50">
+                    <td class="p-4 font-medium">${formatMonthDisplay(h.month)}</td>
+                    <td class="p-4 font-bold text-right rtl:text-left font-mono text-gray-700 dark:text-gray-200" dir="ltr">${h.totalSpent.toLocaleString()} ${currency}</td>
                 </tr>`).join('');
 
-            const fixedTotal = monthlyBills.reduce((sum, item) => sum + item.amount, 0) + yearlyFunds.reduce((sum, item) => sum + (item.amount/12), 0);
-            const spentTotal = transactionsData.reduce((sum, item) => sum + item.amount, 0);
+            const yearlyFundsMonthlyAlloc = yearlyFunds.reduce((sum, item) => sum + (item.amount/12), 0);
+            const totalAllocatedAndSpent = dailyTotalSpent + yearlyFundsMonthlyAlloc;
+            const remaining = salary - totalAllocatedAndSpent;
 
             document.getElementById('input-salary').value = salary || '';
             document.getElementById('display-salary').innerText = salary.toLocaleString();
-            document.getElementById('display-fixed').innerText = fixedTotal.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('display-remaining').innerText = (salary - fixedTotal - spentTotal).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-spent').innerText = totalAllocatedAndSpent.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-remaining').innerText = remaining.toLocaleString(undefined, {maximumFractionDigits: 0});
             
-            generateAIInsights(salary, fixedTotal, spentTotal);
-            renderChart(fixedTotal, transactionsData);
+            renderOverviewChart(spentPerCategory, yearlyFundsMonthlyAlloc);
+            renderHistoryChart(history);
         }
 
-        function generateAIInsights(salary, fixedTotal, spentTotal) {
-            const insightEl = document.getElementById('insight-text');
-            const currency = dictionary[currentLang].currency;
-            if(salary === 0) { insightEl.innerText = dictionary[currentLang].insight_empty; return; }
-            if(spentTotal === 0) return; 
+        let expenseChartInst = null;
+        let historyChartInst = null;
 
-            const currentDay = new Date().getDate();
-            const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
-            const dailyBurnRate = spentTotal / currentDay;
-            const projectedSpend = dailyBurnRate * daysInMonth;
-            const projectedRemaining = salary - fixedTotal - projectedSpend;
-
-            if(projectedRemaining > 0) {
-                insightEl.innerHTML = `${dictionary[currentLang].surplus_msg} <strong>${projectedRemaining.toFixed(0)} ${currency}</strong>.`;
-            } else {
-                insightEl.innerHTML = `⚠️ <strong>${dictionary[currentLang].warning_overspend} <strong>${Math.abs(projectedRemaining).toFixed(0)} ${currency}</strong>.`;
-            }
-        }
-
-        // --- CHARTING & MISC ---
-        let chartInstance = null;
-        function renderChart(fixedTotal, txs) {
+        function renderOverviewChart(spentMap, yearlyAlloc) {
             const ctx = document.getElementById('expenseChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            const categories = {}; categories[dictionary[currentLang].chart_fixed] = fixedTotal;
-            txs.forEach(t => { const catName = getTranslatedCategory(t.category); categories[catName] = (categories[catName] || 0) + t.amount; });
+            if (expenseChartInst) expenseChartInst.destroy();
+            
+            const labels = Object.keys(spentMap);
+            const data = Object.values(spentMap);
+            if(yearlyAlloc > 0) { labels.push(dictionary[currentLang].yearly_funds); data.push(yearlyAlloc); }
+            
             const isDark = document.documentElement.classList.contains('dark');
-            chartInstance = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#64748b'], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#f3f4f6' } }, x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { display: false } } } } });
+            expenseChartInst = new Chart(ctx, { 
+                type: 'doughnut', 
+                data: { labels, datasets: [{ data, backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'], borderColor: isDark ? '#1f2937' : '#ffffff', borderWidth: 2 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: isDark ? '#d1d5db' : '#374151' } } } } 
+            });
+        }
+
+        function renderHistoryChart(historyArr) {
+            const ctx = document.getElementById('historyChart').getContext('2d');
+            if (historyChartInst) historyChartInst.destroy();
+            const sortedHistory = [...historyArr].sort((a,b) => a.month.localeCompare(b.month));
+            const labels = sortedHistory.map(h => formatMonthDisplay(h.month));
+            const data = sortedHistory.map(h => h.totalSpent);
+            const isDark = document.documentElement.classList.contains('dark');
+            historyChartInst = new Chart(ctx, { 
+                type: 'bar', 
+                data: { labels, datasets: [{ label: dictionary[currentLang].total_spent, data, backgroundColor: '#4f46e5', borderRadius: 4 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#f3f4f6' } }, x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { display: false } } } } 
+            });
         }
 
         document.getElementById('tab-nav-container').addEventListener('click', (e) => {
