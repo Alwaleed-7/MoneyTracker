@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" class="light" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maliyat | Smart Finance</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { 
+            darkMode: 'class', 
+            theme: { extend: { colors: { primary: '#4f46e5', primaryHover: '#4338ca' } } } 
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style> 
+        body { transition: background-color 0.3s, color 0.3s; } 
+        .hide-scroll::-webkit-scrollbar { display: none; } 
+        
+        /* RTL Support for inputs */
+        [dir="rtl"] input, [dir="rtl"] select { text-align: right; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans antialiased">
+
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2 text-primary dark:text-indigo-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h1 class="text-xl font-bold tracking-tight" id="app-title">Maliyat</h1>
+            </div>
+            <div class="flex gap-3 items-center">
+                <button id="lang-toggle" class="text-sm font-medium text-gray-500 hover:text-primary transition">عربي</button>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">🌙</button>
+                <button id="logout-btn" class="hidden text-sm font-medium text-red-500 hover:text-red-700 transition" data-i18n="logout">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-4 mt-4">
+        
+        <!-- ================= AUTH SECTION ================= -->
+        <section id="auth-section" class="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-i18n="login_title">Welcome Back</h2>
+            </div>
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Email Address" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl outline-none">
+                <input type="password" id="password" placeholder="Password" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl outline-none">
+                <div class="flex gap-3 pt-2">
+                    <button id="login-btn" class="flex-1 bg-primary text-white font-semibold p-3 rounded-xl hover:bg-primaryHover transition" data-i18n="login">Sign In</button>
+                    <button id="signup-btn" class="flex-1 bg-white dark:bg-gray-700 text-primary font-semibold p-3 rounded-xl border border-primary hover:bg-gray-50 transition" data-i18n="signup">Register</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DASHBOARD SECTION ================= -->
+        <section id="dashboard-section" class="hidden">
+            
+            <!-- Tab Navigation -->
+            <div class="flex overflow-x-auto hide-scroll space-x-1 rtl:space-x-reverse bg-gray-200 dark:bg-gray-800 p-1 rounded-xl mb-6 max-w-fit" id="tab-nav-container">
+                <button data-tab="overview" class="tab-btn active px-6 py-2.5 rounded-lg text-sm font-semibold bg-white dark:bg-gray-700 shadow text-primary dark:text-indigo-400 transition whitespace-nowrap" data-i18n="tab_overview">Overview</button>
+                <button data-tab="fixed" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_fixed">Setup & Fixed Bills</button>
+                <button data-tab="transactions" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_transactions">Daily Transactions</button>
+            </div>
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="tab-overview" class="space-y-6 tab-content block">
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 rounded-2xl shadow-lg text-white">
+                    <h3 class="font-bold flex items-center gap-2 mb-2"><span class="text-xl">✨</span> <span data-i18n="ai_insights">Predictive Insights</span></h3>
+                    <p id="insight-text" class="text-sm text-indigo-100 leading-relaxed" data-i18n="insight_empty">Add your salary and log some transactions to see your financial forecast.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="monthly_income">Monthly Income</h3>
+                        <p class="text-3xl font-bold mt-2"><span id="display-salary">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="total_fixed">Fixed + Yearly Commitments</h3>
+                        <p class="text-3xl font-bold mt-2 text-red-500"><span id="display-fixed">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="available_spend">Remaining Balance</h3>
+                        <p class="text-3xl font-bold mt-2 text-primary"><span id="display-remaining">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-bold mb-4" data-i18n="analytics">Spending Breakdown</h3>
+                    <div class="h-72 w-full relative"><canvas id="expenseChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: FIXED & YEARLY EXPENSES -->
+            <div id="tab-fixed" class="space-y-6 tab-content hidden">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-4 items-end">
+                    <div class="flex-1 w-full">
+                        <label class="block text-sm font-medium text-gray-500 mb-1" data-i18n="salary_label">Base Salary (Monthly)</label>
+                        <input type="number" id="input-salary" placeholder="15000" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
+                    </div>
+                    <button id="save-salary-btn" class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-primaryHover transition w-full md:w-auto" data-i18n="save">Save</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> <span data-i18n="monthly_bills">Monthly Bills</span></h3>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="mb-name" placeholder="..." class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none">
+                            <input type="number" id="mb-amount" placeholder="SAR" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none">
+                            <button id="add-mb-btn" class="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition">+</button>
+                        </div>
+                        <ul id="monthly-list" class="space-y-3"></ul>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> <span data-i18n="yearly_funds">Yearly Funds (Divided by 12)</span></h3>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="yf-name" placeholder="..." class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none">
+                            <input type="number" id="yf-amount" placeholder="Total" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none">
+                            <button id="add-yf-btn" class="bg-purple-500 text-white px-4 rounded-lg hover:bg-purple-600 transition">+</button>
+                        </div>
+                        <ul id="yearly-list" class="space-y-3"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: DAILY TRANSACTIONS -->
+            <div id="tab-transactions" class="space-y-6 tab-content hidden">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-bold mb-4" data-i18n="log_expense">Log Daily Expense</h3>
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <input type="number" id="tx-amount" placeholder="SAR" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
+                        <input type="text" id="tx-desc" placeholder="..." class="flex-1 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
+                        <select id="tx-category" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
+                            <option value="Food & Dining" data-i18n="cat_food">Food & Dining</option>
+                            <option value="Groceries" data-i18n="cat_grocery">Groceries</option>
+                            <option value="Transport" data-i18n="cat_transport">Transport</option>
+                            <option value="Entertainment" data-i18n="cat_entertainment">Entertainment</option>
+                            <option value="Hardware & Tech" data-i18n="cat_tech">Hardware & Tech</option>
+                            <option value="Other" data-i18n="cat_other">Other</option>
+                        </select>
+                        <button id="add-tx-btn" class="bg-green-500 text-white font-bold p-3 rounded-xl hover:bg-green-600 transition shadow-lg" data-i18n="add_record">Add Record</button>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[500px]" id="tx-table">
+                        <thead>
+                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 text-sm border-b border-gray-100 dark:border-gray-600">
+                                <th class="p-4 font-medium" data-i18n="date">Date</th>
+                                <th class="p-4 font-medium" data-i18n="description">Description</th>
+                                <th class="p-4 font-medium" data-i18n="category">Category</th>
+                                <th class="p-4 font-medium text-right rtl:text-left" data-i18n="amount">Amount</th>
+                                <th class="p-4 w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-list" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+        const app = initializeApp({
+            apiKey: "AIzaSyA3xfpNUG7bA0wndP8YkPR3DSEcpWJ3OCo",
+            authDomain: "moneyapp-84c24.firebaseapp.com",
+            projectId: "moneyapp-84c24",
+            storageBucket: "moneyapp-84c24.firebasestorage.app",
+            messagingSenderId: "138624267119",
+            appId: "1:138624267119:web:8a3b089d04c52a97e2ee9a"
+        });
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null, userData = { salary: 0, monthlyBills: [], yearlyFunds: [] }, transactionsData = [];
+        let currentLang = 'en';
+
+        // --- TRANSLATION DICTIONARY ---
+        const dictionary = {
+            en: {
+                app_title: "Maliyat", login_title: "Welcome Back", login: "Sign In", signup: "Register", logout: "Logout",
+                tab_overview: "Overview", tab_fixed: "Setup & Fixed Bills", tab_transactions: "Daily Transactions",
+                ai_insights: "Predictive Insights", monthly_income: "Monthly Income", total_fixed: "Fixed + Yearly Commitments",
+                available_spend: "Remaining Balance", analytics: "Spending Breakdown", monthly_bills: "Monthly Bills",
+                yearly_funds: "Yearly Funds (Divided by 12)", log_expense: "Log Daily Expense", save: "Save", add_record: "Add Record",
+                date: "Date", description: "Description", category: "Category", amount: "Amount", salary_label: "Base Salary (Monthly)",
+                currency: "SAR", insight_empty: "Add your salary and log some transactions to see your financial forecast.",
+                cat_food: "Food & Dining", cat_grocery: "Groceries", cat_transport: "Transport", cat_entertainment: "Entertainment", cat_tech: "Hardware & Tech", cat_other: "Other",
+                chart_fixed: "Fixed & Yearly", warning_overspend: "Warning: At current velocity you are projected to overspend by",
+                surplus_msg: "At your current velocity, you will finish the month with a surplus of",
+                per_month: "per month", total_yr: "Total: {x} SAR/yr"
+            },
+            ar: {
+                app_title: "ماليات", login_title: "مرحباً بك", login: "تسجيل الدخول", signup: "حساب جديد", logout: "تسجيل خروج",
+                tab_overview: "نظرة عامة", tab_fixed: "الالتزامات الثابتة", tab_transactions: "المصروفات اليومية",
+                ai_insights: "التحليلات الذكية", monthly_income: "الدخل الشهري", total_fixed: "الالتزامات الثابتة والسنوية",
+                available_spend: "المبلغ المتبقي", analytics: "تحليل المصروفات", monthly_bills: "الفواتير الشهرية",
+                yearly_funds: "الالتزامات السنوية (مقسمة على 12)", log_expense: "تسجيل مصروف يومي", save: "حفظ", add_record: "إضافة سجل",
+                date: "التاريخ", description: "الوصف", category: "الفئة", amount: "المبلغ", salary_label: "الراتب الأساسي (شهرياً)",
+                currency: "ريال", insight_empty: "أضف راتبك وسجل بعض المصروفات لرؤية توقعاتك المالية.",
+                cat_food: "مطاعم", cat_grocery: "مقاضي", cat_transport: "مواصلات", cat_entertainment: "ترفيه", cat_tech: "أجهزة وتقنية", cat_other: "أخرى",
+                chart_fixed: "الالتزامات الثابتة", warning_overspend: "تحذير: بمعدل صرفك الحالي، من المتوقع أن تتجاوز ميزانيتك بمقدار",
+                surplus_msg: "بمعدل صرفك الحالي، ستنهي الشهر بفائض قدره",
+                per_month: "شهرياً", total_yr: "الإجمالي: {x} ريال/سنوياً"
+            }
+        };
+
+        // --- UI & LANGUAGE ENGINE ---
+        document.getElementById('lang-toggle').addEventListener('click', (e) => {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
+            e.target.innerText = currentLang === 'ar' ? 'English' : 'عربي';
+            document.getElementById('app-title').innerText = dictionary[currentLang].app_title;
+            
+            // Adjust table text alignment based on language
+            const txTable = document.getElementById('tx-table');
+            if (currentLang === 'ar') txTable.classList.add('text-right');
+            else txTable.classList.remove('text-right');
+            
+            applyTranslations();
+            updateUI(); // Re-render lists and charts for translations
+        });
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dictionary[currentLang][key]) {
+                    if (el.tagName === 'INPUT' && el.type === 'button') el.value = dictionary[currentLang][key];
+                    else el.innerText = dictionary[currentLang][key];
+                }
+            });
+        }
+
+        // --- TAB NAVIGATION ---
+        document.getElementById('tab-nav-container').addEventListener('click', (e) => {
+            if(!e.target.classList.contains('tab-btn')) return;
+            const tabId = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white', 'dark:bg-gray-700', 'shadow', 'text-primary', 'dark:text-indigo-400');
+                el.classList.add('text-gray-500');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            e.target.classList.remove('text-gray-500');
+            e.target.classList.add('bg-white', 'dark:bg-gray-700', 'shadow', 'text-primary', 'dark:text-indigo-400');
+        });
+
+        // --- DATABASE OPERATIONS ---
+        async function safeDBUpdate(action) {
+            if(!currentUser) return alert("You must be logged in.");
+            try { await action(); } 
+            catch(err) { alert(`Firebase Error: ${err.message}\nCheck Firestore rules!`); }
+        }
+
+        document.getElementById('save-salary-btn').addEventListener('click', () => {
+            const val = parseFloat(document.getElementById('input-salary').value);
+            if(!val) return;
+            safeDBUpdate(async () => { await setDoc(doc(db, "users", currentUser.uid), { salary: val }, { merge: true }); });
+        });
+
+        document.getElementById('add-mb-btn').addEventListener('click', () => {
+            const name = document.getElementById('mb-name').value;
+            const amt = parseFloat(document.getElementById('mb-amount').value);
+     
