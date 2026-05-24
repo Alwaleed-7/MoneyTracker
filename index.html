@@ -17,11 +17,12 @@
         body { transition: background-color 0.3s, color 0.3s; } 
         .hide-scroll::-webkit-scrollbar { display: none; } 
         [dir="rtl"] input, [dir="rtl"] select { text-align: right; }
+        /* Custom range slider styling for cross-browser consistency */
+        input[type=range] { accent-color: #4f46e5; }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans antialiased">
 
-    <!-- Navbar -->
     <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2 text-primary dark:text-indigo-400">
@@ -38,7 +39,6 @@
 
     <main class="max-w-6xl mx-auto p-4 mt-4">
         
-        <!-- ================= AUTH SECTION ================= -->
         <section id="auth-section" class="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-i18n="login_title">Welcome Back</h2>
@@ -53,9 +53,7 @@
                 </div>
             </div>
         </section>
-        <!-- ================= DASHBOARD SECTION ================= -->
-        <section id="dashboard-section" class="hidden">
-            <!-- Tab Navigation -->
+                <section id="dashboard-section" class="hidden">
             <div class="flex overflow-x-auto hide-scroll space-x-1 rtl:space-x-reverse bg-gray-200 dark:bg-gray-800 p-1 rounded-xl mb-6 max-w-fit" id="tab-nav-container">
                 <button data-tab="overview" class="tab-btn active px-6 py-2.5 rounded-lg text-sm font-semibold bg-white dark:bg-gray-700 shadow text-primary dark:text-indigo-400 transition whitespace-nowrap" data-i18n="tab_overview">Overview</button>
                 <button data-tab="fixed" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_fixed">Setup & Budgets</button>
@@ -63,9 +61,7 @@
                 <button data-tab="history" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_history">History</button>
             </div>
 
-            <!-- TAB 1: OVERVIEW -->
             <div id="tab-overview" class="space-y-6 tab-content block">
-                <!-- Month Header & Controls -->
                 <div class="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400 font-medium" data-i18n="current_month">Current Month</p>
@@ -74,10 +70,8 @@
                     <button id="close-month-btn" class="mt-4 md:mt-0 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold px-6 py-2.5 rounded-xl hover:bg-gray-700 dark:hover:bg-gray-200 transition shadow-md" data-i18n="close_month">Close Month & Start New</button>
                 </div>
 
-                <!-- Main Metrics -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4 opacity-5 text-gray-900 dark:text-white"><svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM2 9v5a2 2 0 002 2h12a2 2 0 002-2V9H2z"></path></svg></div>
                         <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="monthly_income">Monthly Income</h3>
                         <p class="text-3xl font-bold mt-2"><span id="display-salary">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
                     </div>
@@ -86,12 +80,11 @@
                         <p class="text-3xl font-bold mt-2 text-red-500"><span id="display-spent">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
                     </div>
                     <div class="bg-gradient-to-br from-primary to-primaryHover p-6 rounded-2xl shadow-lg text-white relative">
-                        <h3 class="text-sm font-semibold text-indigo-100" data-i18n="available_spend">Unallocated Money</h3>
+                        <h3 class="text-sm font-semibold text-indigo-100" data-i18n="total_remaining">Total Remaining Balance</h3>
                         <p class="text-3xl font-bold mt-2"><span id="display-remaining">0</span> <span class="text-sm text-indigo-200" data-i18n="currency">SAR</span></p>
                     </div>
                 </div>
 
-                <!-- Budget Progress & Charts Grid -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="text-lg font-bold mb-4" data-i18n="category_budgets">Category Budgets</h3>
@@ -104,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- TAB 2: SETUP & BUDGETS -->
             <div id="tab-fixed" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-4 items-end">
                     <div class="flex-1 w-full">
@@ -118,13 +110,22 @@
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="text-lg font-bold mb-1 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> <span data-i18n="monthly_bills">Monthly Budgets</span></h3>
                         <p class="text-xs text-gray-500 mb-4" data-i18n="budget_desc">Set spending limits for categories.</p>
-                        <div class="flex gap-2 mb-4">
-                            <input type="text" id="mb-name" placeholder="Category Name" class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
-                            <input type="number" id="mb-amount" placeholder="SAR limit" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
-                            <button id="add-mb-btn" class="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition disabled:opacity-50">+</button>
+                        
+                        <div class="flex flex-col gap-3 mb-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
+                            <div class="flex gap-2">
+                                <input type="text" id="mb-name" placeholder="Category" class="flex-1 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                                <input type="number" id="mb-amount" placeholder="SAR limit" class="w-24 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                                <button id="add-mb-btn" class="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition disabled:opacity-50">+</button>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-gray-400 font-mono">0</span>
+                                <input type="range" id="mb-slider" min="0" max="0" value="0" class="flex-1 cursor-pointer">
+                                <span class="text-xs text-gray-400 font-mono" id="mb-max-label">0</span>
+                            </div>
                         </div>
                         <ul id="monthly-list" class="space-y-3"></ul>
                     </div>
+
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="text-lg font-bold mb-1 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> <span data-i18n="yearly_funds">Yearly Funds</span></h3>
                         <p class="text-xs text-gray-500 mb-4" data-i18n="yearly_desc">Set aside money monthly for annual payments.</p>
@@ -137,16 +138,14 @@
                     </div>
                 </div>
             </div>
-               <!-- TAB 3: DAILY TRANSACTIONS -->
-            <div id="tab-transactions" class="space-y-6 tab-content hidden">
+                        <div id="tab-transactions" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold mb-4" data-i18n="log_expense">Log Daily Expense</h3>
                     <div class="flex flex-col md:flex-row gap-3">
                         <input type="number" id="tx-amount" placeholder="SAR" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
                         <input type="text" id="tx-desc" placeholder="..." class="flex-1 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
                         <select id="tx-category" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
-                            <!-- Injected by JS -->
-                        </select>
+                            </select>
                         <button id="add-tx-btn" class="bg-green-500 text-white font-bold p-3 rounded-xl hover:bg-green-600 transition shadow-lg disabled:opacity-50" data-i18n="add_record">Add Record</button>
                     </div>
                 </div>
@@ -166,7 +165,6 @@
                 </div>
             </div>
 
-            <!-- TAB 4: HISTORY -->
             <div id="tab-history" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold mb-4" data-i18n="history_chart">Spending Trends Over Time</h3>
@@ -211,6 +209,17 @@
         let activeTransactions = [];  
         let currentLang = 'en';
 
+        // Slider Sync Logic
+        const mbSlider = document.getElementById('mb-slider');
+        const mbAmount = document.getElementById('mb-amount');
+        mbSlider.addEventListener('input', (e) => mbAmount.value = e.target.value);
+        mbAmount.addEventListener('input', (e) => {
+            let val = parseFloat(e.target.value) || 0;
+            const maxVal = parseFloat(mbSlider.max) || 0;
+            if (val > maxVal) { val = maxVal; e.target.value = val; }
+            mbSlider.value = val;
+        });
+
         function getMonthString() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
         function formatMonthDisplay(monthStr) {
             if(!monthStr) return "--";
@@ -234,7 +243,7 @@
             errorText.classList.add('hidden');
 
             if (!email || !password) {
-                errorText.innerText = currentLang === 'en' ? "Email and Password are required." : "البريد الإلكتروني وكلمة المرور مطلوبة.";
+                errorText.innerText = currentLang === 'en' ? "Email and Password required." : "البيانات مطلوبة.";
                 errorText.classList.remove('hidden'); return;
             }
 
@@ -258,8 +267,7 @@
         loginBtn.addEventListener('click', () => handleAuth('login', loginBtn));
         signupBtn.addEventListener('click', () => handleAuth('signup', signupBtn));
         document.getElementById('logout-btn').addEventListener('click', async () => { await signOut(auth); window.location.reload(); });
-
-        // ==========================================
+                    // ==========================================
         // 3. DATABASE CONNECTION
         // ==========================================
         onAuthStateChanged(auth, (user) => {
@@ -279,7 +287,7 @@
                         }
                     } else {
                         userData = { salary: 0, currentMonth: getMonthString(), monthlyBills: [], yearlyFunds: [], history: [] };
-                        setDoc(userRef, userData).catch(err => alert("DB Creation failed check Rules."));
+                        setDoc(userRef, userData).catch(err => alert("DB Error"));
                     }
                     filterTransactions(); updateUI(); 
                 });
@@ -306,10 +314,11 @@
         async function safeDBUpdate(action, buttonToDisable = null) {
             if(!currentUser) return;
             if(buttonToDisable) buttonToDisable.disabled = true;
-            try { await action(); } catch(err) { alert(`Error: ${err.message}`); console.error(err); } 
+            try { await action(); } catch(err) { alert(`Error: ${err.message}`); } 
             finally { if(buttonToDisable) buttonToDisable.disabled = false; }
         }
-                    // ==========================================
+
+        // ==========================================
         // 4. DATA ACTIONS
         // ==========================================
         document.getElementById('save-salary-btn').addEventListener('click', (e) => {
@@ -321,11 +330,13 @@
         document.getElementById('add-mb-btn').addEventListener('click', (e) => {
             const name = document.getElementById('mb-name').value;
             const amt = parseFloat(document.getElementById('mb-amount').value);
-            if(!name || isNaN(amt)) return;
+            if(!name || isNaN(amt) || amt <= 0) return;
             const newList = [...(userData.monthlyBills || []), { id: Date.now().toString(), name, amount: amt }];
             safeDBUpdate(async () => {
                 await setDoc(doc(db, "users", currentUser.uid), { monthlyBills: newList }, { merge: true });
-                document.getElementById('mb-name').value = ''; document.getElementById('mb-amount').value = '';
+                document.getElementById('mb-name').value = ''; 
+                document.getElementById('mb-amount').value = '';
+                document.getElementById('mb-slider').value = 0;
             }, e.target);
         });
 
@@ -390,30 +401,30 @@
                 app_title: "Maliyat", login_title: "Welcome Back", login: "Sign In", signup: "Register", logout: "Logout",
                 tab_overview: "Overview", tab_fixed: "Setup & Budgets", tab_transactions: "Daily Transactions", tab_history: "History",
                 current_month: "Current Month", close_month: "Close Month & Start New",
-                monthly_income: "Monthly Income", total_spent: "Total Allocated/Spent",
-                available_spend: "Unallocated Money", category_budgets: "Category Budget Progress", analytics: "Spending Breakdown", 
-                monthly_bills: "Monthly Budgets", budget_desc: "Set spending limits for categories (e.g., Groceries, Rent).",
-                yearly_funds: "Yearly Funds (Divided by 12)", yearly_desc: "Set aside money monthly for big annual payments.",
+                monthly_income: "Monthly Income", total_spent: "Total Spent & Saved", total_remaining: "Total Remaining Balance",
+                available_spend: "Unallocated Money", category_budgets: "Category Budgets", analytics: "Spending Breakdown", 
+                monthly_bills: "Monthly Budgets", budget_desc: "Set spending limits. Slider respects unallocated funds.",
+                yearly_funds: "Yearly Funds", yearly_desc: "Set aside money monthly for annual payments.",
                 log_expense: "Log Daily Expense", save: "Save", add_record: "Add Record",
                 date: "Date", description: "Description", category: "Category", amount: "Amount", salary_label: "Base Salary (Monthly)",
                 currency: "SAR", insight_empty: "Add your salary and log some transactions.",
                 history_chart: "Spending Trends Over Time", month: "Month",
-                cat_other: "Other", over_budget: "Over Budget!", remaining: "left",
+                cat_other: "Other (Unallocated)", over_budget: "Over Budget!", remaining: "left",
                 per_month: "per month", total_yr: "Total: {x} SAR/yr"
             },
             ar: {
                 app_title: "ماليات", login_title: "مرحباً بك", login: "تسجيل الدخول", signup: "حساب جديد", logout: "تسجيل خروج",
                 tab_overview: "نظرة عامة", tab_fixed: "إعداد الميزانيات", tab_transactions: "المصروفات اليومية", tab_history: "السجل التاريخي",
                 current_month: "الشهر الحالي", close_month: "إغلاق الشهر وبدء شهر جديد",
-                monthly_income: "الدخل الشهري", total_spent: "إجمالي المصروفات والالتزامات",
-                available_spend: "المبلغ غير المخصص", category_budgets: "متابعة ميزانية الفئات", analytics: "تحليل المصروفات", 
-                monthly_bills: "الميزانيات الشهرية", budget_desc: "حدد حدود الصرف للفئات (مثل: مقاضي، إيجار).",
-                yearly_funds: "الالتزامات السنوية (مقسمة على 12)", yearly_desc: "ادخر شهرياً للدفعات السنوية الكبيرة.",
+                monthly_income: "الدخل الشهري", total_spent: "إجمالي المصروفات والمدخرات", total_remaining: "إجمالي الرصيد المتبقي",
+                available_spend: "المبلغ غير المخصص", category_budgets: "ميزانية الفئات", analytics: "تحليل المصروفات", 
+                monthly_bills: "الميزانيات الشهرية", budget_desc: "حدد حدود الصرف. الشريط يحترم الأموال المتبقية.",
+                yearly_funds: "الالتزامات السنوية", yearly_desc: "ادخر شهرياً للدفعات السنوية الكبيرة.",
                 log_expense: "تسجيل مصروف يومي", save: "حفظ", add_record: "إضافة سجل",
                 date: "التاريخ", description: "الوصف", category: "الفئة", amount: "المبلغ", salary_label: "الراتب الأساسي (شهرياً)",
                 currency: "ريال", insight_empty: "أضف راتبك وسجل بعض المصروفات.",
                 history_chart: "اتجاهات الإنفاق بمرور الوقت", month: "الشهر",
-                cat_other: "أخرى", over_budget: "تجاوز الميزانية!", remaining: "متبقي",
+                cat_other: "أخرى (غير مخصص)", over_budget: "تجاوز الميزانية!", remaining: "متبقي",
                 per_month: "شهرياً", total_yr: "الإجمالي: {x} ريال/سنوياً"
             }
         };
@@ -449,10 +460,26 @@
             
             document.getElementById('display-month').innerText = formatMonthDisplay(currentMonth);
 
+            // MATH: Calculate unallocated slider limits
+            const yearlyFundsMonthlyAlloc = yearlyFunds.reduce((sum, item) => sum + (item.amount/12), 0);
+            const monthlyBillsTotal = monthlyBills.reduce((sum, item) => sum + item.amount, 0);
+            const totalBudgeted = monthlyBillsTotal + yearlyFundsMonthlyAlloc;
+            const unallocatedForBudget = Math.max(0, salary - totalBudgeted);
+
+            // Update Slider Max Limit dynamically
+            document.getElementById('mb-slider').max = unallocatedForBudget;
+            document.getElementById('mb-max-label').innerText = unallocatedForBudget.toLocaleString();
+            if(parseFloat(document.getElementById('mb-amount').value) > unallocatedForBudget) {
+                document.getElementById('mb-amount').value = unallocatedForBudget;
+                document.getElementById('mb-slider').value = unallocatedForBudget;
+            }
+
+            // Populate Dropdown for Transactions
             const catSelect = document.getElementById('tx-category');
             catSelect.innerHTML = monthlyBills.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
             catSelect.innerHTML += `<option value="Other">${dictionary[currentLang].cat_other}</option>`;
 
+            // Render Setup Lists
             document.getElementById('monthly-list').innerHTML = monthlyBills.map(b => `
                 <li class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <span class="font-medium">${b.name}</span>
@@ -465,6 +492,7 @@
                     <div class="flex items-center gap-4 text-right rtl:text-left"><div><span class="text-purple-600 dark:text-purple-400 font-bold font-mono" dir="ltr">${(f.amount/12).toFixed(0)} ${currency}</span><span class="text-xs text-gray-400 block">${dictionary[currentLang].per_month}</span></div><button data-id="${f.id}" class="del-btn text-red-400 hover:text-red-600">✕</button></div>
                 </li>`).join('');
 
+            // Calculate spent per category
             const spentPerCategory = {};
             let dailyTotalSpent = 0;
             activeTransactions.forEach(t => {
@@ -472,20 +500,28 @@
                 dailyTotalSpent += t.amount;
             });
 
-            document.getElementById('budget-progress-container').innerHTML = monthlyBills.map(b => {
-                const spent = spentPerCategory[b.name] || 0;
+            // Create 'Other' pseudo-category for Budget Progress
+            const allProgressBars = [...monthlyBills];
+            if(unallocatedForBudget > 0 || (spentPerCategory["Other"] > 0)) {
+                allProgressBars.push({ name: "Other", amount: unallocatedForBudget, isOther: true });
+            }
+
+            // Render Budget Progress Bars (Now including 'Other')
+            document.getElementById('budget-progress-container').innerHTML = allProgressBars.map(b => {
+                const displayName = b.isOther ? dictionary[currentLang].cat_other : b.name;
+                const spent = spentPerCategory[b.isOther ? "Other" : b.name] || 0;
                 const remaining = b.amount - spent;
                 const isOver = remaining < 0;
-                const pct = Math.min(100, (spent / b.amount) * 100);
+                const pct = b.amount === 0 ? (spent > 0 ? 100 : 0) : Math.min(100, (spent / b.amount) * 100);
                 
                 let textClass = isOver ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
                 let textStr = isOver ? `${dictionary[currentLang].over_budget} (${Math.abs(remaining)} ${currency})` : `${remaining} ${currency} ${dictionary[currentLang].remaining}`;
-                let barColor = isOver ? 'bg-red-500' : (pct > 80 ? 'bg-yellow-500' : 'bg-primary');
+                let barColor = isOver ? 'bg-red-500' : (b.isOther ? 'bg-gray-400 dark:bg-gray-500' : (pct > 80 ? 'bg-yellow-500' : 'bg-primary'));
 
                 return `
                 <div>
                     <div class="flex justify-between mb-1 text-sm">
-                        <span class="font-medium text-gray-700 dark:text-gray-200">${b.name}</span>
+                        <span class="font-medium text-gray-700 dark:text-gray-200">${displayName}</span>
                         <span class="${textClass} font-mono" dir="ltr">${spent} / ${b.amount} ${currency}</span>
                     </div>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
@@ -495,6 +531,7 @@
                 </div>`;
             }).join('');
 
+            // Render Transactions List
             document.getElementById('transactions-list').innerHTML = activeTransactions.map(t => {
                 let displayCat = t.category === "Other" ? dictionary[currentLang].cat_other : t.category;
                 return `
@@ -507,20 +544,21 @@
                 </tr>`;
             }).join('');
 
+            // Render History List
             document.getElementById('history-list').innerHTML = history.sort((a,b) => b.month.localeCompare(a.month)).map(h => `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/20 transition border-b border-gray-100 dark:border-gray-700/50">
                     <td class="p-4 font-medium">${formatMonthDisplay(h.month)}</td>
                     <td class="p-4 font-bold text-right rtl:text-left font-mono text-gray-700 dark:text-gray-200" dir="ltr">${h.totalSpent.toLocaleString()} ${currency}</td>
                 </tr>`).join('');
 
-            const yearlyFundsMonthlyAlloc = yearlyFunds.reduce((sum, item) => sum + (item.amount/12), 0);
+            // Top Dashboard Metrics
             const totalAllocatedAndSpent = dailyTotalSpent + yearlyFundsMonthlyAlloc;
-            const remaining = salary - totalAllocatedAndSpent;
+            const remainingOverall = salary - totalAllocatedAndSpent;
 
             document.getElementById('input-salary').value = salary || '';
             document.getElementById('display-salary').innerText = salary.toLocaleString();
             document.getElementById('display-spent').innerText = totalAllocatedAndSpent.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('display-remaining').innerText = remaining.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-remaining').innerText = remainingOverall.toLocaleString(undefined, {maximumFractionDigits: 0});
             
             renderOverviewChart(spentPerCategory, yearlyFundsMonthlyAlloc);
             renderHistoryChart(history);
@@ -533,14 +571,24 @@
             const ctx = document.getElementById('expenseChart').getContext('2d');
             if (expenseChartInst) expenseChartInst.destroy();
             
-            const labels = Object.keys(spentMap);
-            const data = Object.values(spentMap);
-            if(yearlyAlloc > 0) { labels.push(dictionary[currentLang].yearly_funds); data.push(yearlyAlloc); }
+            const labels = [];
+            const data = [];
+            
+            // Map raw names to Translated Names for the Chart
+            Object.keys(spentMap).forEach(key => {
+                labels.push(key === "Other" ? dictionary[currentLang].cat_other : key);
+                data.push(spentMap[key]);
+            });
+
+            if(yearlyAlloc > 0) { 
+                labels.push(dictionary[currentLang].yearly_funds); 
+                data.push(yearlyAlloc); 
+            }
             
             const isDark = document.documentElement.classList.contains('dark');
             expenseChartInst = new Chart(ctx, { 
                 type: 'doughnut', 
-                data: { labels, datasets: [{ data, backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'], borderColor: isDark ? '#1f2937' : '#ffffff', borderWidth: 2 }] }, 
+                data: { labels, datasets: [{ data, backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#9ca3af'], borderColor: isDark ? '#1f2937' : '#ffffff', borderWidth: 2 }] }, 
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: isDark ? '#d1d5db' : '#374151' } } } } 
             });
         }
@@ -559,6 +607,7 @@
             });
         }
 
+        // --- Tabs & Theme ---
         document.getElementById('tab-nav-container').addEventListener('click', (e) => {
             if(!e.target.classList.contains('tab-btn')) return;
             const tabId = e.target.getAttribute('data-tab');
