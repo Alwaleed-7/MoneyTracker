@@ -187,7 +187,7 @@
             const email = emailInput.value.trim();
             const password = passInput.value.trim();
             
-            errorText.classList.add('hidden'); // Reset error
+            errorText.classList.add('hidden');
 
             if (!email || !password) {
                 errorText.innerText = currentLang === 'en' ? "Email and Password are required." : "البريد الإلكتروني وكلمة المرور مطلوبة.";
@@ -205,7 +205,6 @@
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
                 }
-                // If successful, onAuthStateChanged takes over.
                 emailInput.value = '';
                 passInput.value = '';
             } catch (error) {
@@ -228,7 +227,7 @@
         
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await signOut(auth);
-            window.location.reload(); // Refresh app state cleanly
+            window.location.reload();
         });
 
         // ==========================================
@@ -243,22 +242,19 @@
                 
                 const userRef = doc(db, "users", user.uid);
                 
-                // Watch Main Data (Salary & Fixed Bills)
                 onSnapshot(userRef, (docSnap) => { 
                     if(docSnap.exists()) { 
                         userData = docSnap.data(); 
                     } else {
-                        // If new user, create the document securely
                         setDoc(userRef, { salary: 0, monthlyBills: [], yearlyFunds: [] })
-                            .catch(err => alert("Database creation failed. Please check your Firestore Security Rules."));
+                            .catch(err => alert("Database creation failed. Check Firestore Security Rules."));
                     }
                     updateUI(); 
                 }, (error) => {
-                    alert("Cannot read database. Go to Firebase Console -> Firestore -> Rules, and allow read/write for authenticated users.");
+                    alert("Cannot read database. Check Firestore Rules!");
                     console.error(error);
                 });
                 
-                // Watch Transactions
                 const txRef = query(collection(db, "users", user.uid, "transactions"), orderBy("timestamp", "desc"));
                 onSnapshot(txRef, (snapshot) => {
                     transactionsData = []; 
@@ -279,76 +275,76 @@
             try { 
                 await action(); 
             } catch(err) { 
-                alert(`Error saving to Firebase: ${err.message}\nMake sure your Firestore Database is created and Rules are set!`); 
+                alert(`Error: ${err.message}`); 
                 console.error(err);
             } finally {
                 if(buttonToDisable) buttonToDisable.disabled = false;
             }
         }
 
-        // --- Data Input Listeners ---
+                // --- Data Input Listeners ---
         document.getElementById('save-salary-btn').addEventListener('click', (e) => {
-            const val id="yearly-list" class="space-y-3"></ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: DAILY TRANSACTIONS -->
-            <div id="tab-transactions" class="space-y-6 tab-content hidden">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="text-lg font-bold mb-4" data-i18n="log_expense">Log Daily Expense</h3>
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <input type="number" id="tx-amount" placeholder="SAR" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
-                        <input type="text" id="tx-desc" placeholder="..." class="flex-1 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
-                        <select id="tx-category" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none">
-                            <option value="Food & Dining" data-i18n="cat_food">Food & Dining</option>
-                            <option value="Groceries" data-i18n="cat_grocery">Groceries</option>
-                            <option value="Transport" data-i18n="cat_transport">Transport</option>
-                            <option value="Entertainment" data-i18n="cat_entertainment">Entertainment</option>
-                            <option value="Hardware & Tech" data-i18n="cat_tech">Hardware & Tech</option>
-                            <option value="Other" data-i18n="cat_other">Other</option>
-                        </select>
-                        <button id="add-tx-btn" class="bg-green-500 text-white font-bold p-3 rounded-xl hover:bg-green-600 transition shadow-lg" data-i18n="add_record">Add Record</button>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[500px]" id="tx-table">
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 text-sm border-b border-gray-100 dark:border-gray-600">
-                                <th class="p-4 font-medium" data-i18n="date">Date</th>
-                                <th class="p-4 font-medium" data-i18n="description">Description</th>
-                                <th class="p-4 font-medium" data-i18n="category">Category</th>
-                                <th class="p-4 font-medium text-right rtl:text-left" data-i18n="amount">Amount</th>
-                                <th class="p-4 w-10"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactions-list" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-        const app = initializeApp({
-            apiKey: "AIzaSyA3xfpNUG7bA0wndP8YkPR3DSEcpWJ3OCo",
-            authDomain: "moneyapp-84c24.firebaseapp.com",
-            projectId: "moneyapp-84c24",
-            storageBucket: "moneyapp-84c24.firebasestorage.app",
-            messagingSenderId: "138624267119",
-            appId: "1:138624267119:web:8a3b089d04c52a97e2ee9a"
+            const val = parseFloat(document.getElementById('input-salary').value);
+            if(isNaN(val) || val < 0) return;
+            safeDBUpdate(async () => { await setDoc(doc(db, "users", currentUser.uid), { salary: val }, { merge: true }); }, e.target);
         });
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
-        let currentUser = null, userData = { salary: 0, monthlyBills: [], yearlyFunds: [] }, transactionsData = [];
-        let currentLang = 'en';
 
-        // --- TRANSLATION DICTIONARY ---
+        document.getElementById('add-mb-btn').addEventListener('click', (e) => {
+            const name = document.getElementById('mb-name').value;
+            const amt = parseFloat(document.getElementById('mb-amount').value);
+            if(!name || isNaN(amt)) return;
+            const newList = [...(userData.monthlyBills || []), { id: Date.now().toString(), name, amount: amt }];
+            safeDBUpdate(async () => {
+                await setDoc(doc(db, "users", currentUser.uid), { monthlyBills: newList }, { merge: true });
+                document.getElementById('mb-name').value = ''; document.getElementById('mb-amount').value = '';
+            }, e.target);
+        });
+
+        document.getElementById('add-yf-btn').addEventListener('click', (e) => {
+            const name = document.getElementById('yf-name').value;
+            const amt = parseFloat(document.getElementById('yf-amount').value);
+            if(!name || isNaN(amt)) return;
+            const newList = [...(userData.yearlyFunds || []), { id: Date.now().toString(), name, amount: amt }];
+            safeDBUpdate(async () => {
+                await setDoc(doc(db, "users", currentUser.uid), { yearlyFunds: newList }, { merge: true });
+                document.getElementById('yf-name').value = ''; document.getElementById('yf-amount').value = '';
+            }, e.target);
+        });
+
+        document.getElementById('add-tx-btn').addEventListener('click', (e) => {
+            const amount = parseFloat(document.getElementById('tx-amount').value);
+            const desc = document.getElementById('tx-desc').value;
+            const catSelect = document.getElementById('tx-category');
+            const category = catSelect.options[catSelect.selectedIndex].value;
+            if(isNaN(amount) || !desc) return;
+            
+            safeDBUpdate(async () => {
+                await addDoc(collection(db, "users", currentUser.uid, "transactions"), {
+                    amount, desc, category, timestamp: Date.now(), dateStr: new Date().toLocaleDateString()
+                });
+                document.getElementById('tx-amount').value = ''; document.getElementById('tx-desc').value = '';
+            }, e.target);
+        });
+
+        // Event Delegation for Delete Buttons
+        document.getElementById('monthly-list').addEventListener('click', (e) => {
+            if(!e.target.classList.contains('del-btn')) return;
+            const newList = userData.monthlyBills.filter(item => item.id !== e.target.dataset.id);
+            safeDBUpdate(async () => { await updateDoc(doc(db, "users", currentUser.uid), { monthlyBills: newList }); });
+        });
+        document.getElementById('yearly-list').addEventListener('click', (e) => {
+            if(!e.target.classList.contains('del-btn')) return;
+            const newList = userData.yearlyFunds.filter(item => item.id !== e.target.dataset.id);
+            safeDBUpdate(async () => { await updateDoc(doc(db, "users", currentUser.uid), { yearlyFunds: newList }); });
+        });
+        document.getElementById('transactions-list').addEventListener('click', (e) => {
+            if(!e.target.classList.contains('del-btn')) return;
+            safeDBUpdate(async () => { await deleteDoc(doc(db, "users", currentUser.uid, "transactions", e.target.dataset.id)); });
+        });
+
+        // ==========================================
+        // 4. TRANSLATION & UI RENDERING
+        // ==========================================
         const dictionary = {
             en: {
                 app_title: "Maliyat", login_title: "Welcome Back", login: "Sign In", signup: "Register", logout: "Logout",
@@ -378,21 +374,15 @@
             }
         };
 
-        // --- UI & LANGUAGE ENGINE ---
         document.getElementById('lang-toggle').addEventListener('click', (e) => {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.documentElement.lang = currentLang;
             e.target.innerText = currentLang === 'ar' ? 'English' : 'عربي';
             document.getElementById('app-title').innerText = dictionary[currentLang].app_title;
-            
-            // Adjust table text alignment based on language
             const txTable = document.getElementById('tx-table');
-            if (currentLang === 'ar') txTable.classList.add('text-right');
-            else txTable.classList.remove('text-right');
-            
-            applyTranslations();
-            updateUI(); // Re-render lists and charts for translations
+            if (currentLang === 'ar') txTable.classList.add('text-right'); else txTable.classList.remove('text-right');
+            applyTranslations(); updateUI();
         });
 
         function applyTranslations() {
@@ -405,34 +395,94 @@
             });
         }
 
-        // --- TAB NAVIGATION ---
+        function getTranslatedCategory(catString) {
+            const map = {
+                "Food & Dining": dictionary[currentLang].cat_food, "Groceries": dictionary[currentLang].cat_grocery,
+                "Transport": dictionary[currentLang].cat_transport, "Entertainment": dictionary[currentLang].cat_entertainment,
+                "Hardware & Tech": dictionary[currentLang].cat_tech, "Other": dictionary[currentLang].cat_other
+            };
+            return map[catString] || catString;
+        }
+
+        function updateUI() {
+            const { salary = 0, monthlyBills = [], yearlyFunds = [] } = userData;
+            const currency = dictionary[currentLang].currency;
+            
+            document.getElementById('monthly-list').innerHTML = monthlyBills.map(b => `
+                <li class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <span class="font-medium">${b.name}</span>
+                    <div class="flex items-center gap-4"><span class="text-gray-500 font-mono" dir="ltr">${b.amount} ${currency}</span><button data-id="${b.id}" class="del-btn text-red-400 hover:text-red-600">✕</button></div>
+                </li>`).join('');
+
+            document.getElementById('yearly-list').innerHTML = yearlyFunds.map(f => `
+                <li class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-purple-500">
+                    <div><span class="font-medium block">${f.name}</span><span class="text-xs text-gray-400">${dictionary[currentLang].total_yr.replace('{x}', f.amount)}</span></div>
+                    <div class="flex items-center gap-4 text-right rtl:text-left"><div><span class="text-purple-600 dark:text-purple-400 font-bold font-mono" dir="ltr">${(f.amount/12).toFixed(0)} ${currency}</span><span class="text-xs text-gray-400 block">${dictionary[currentLang].per_month}</span></div><button data-id="${f.id}" class="del-btn text-red-400 hover:text-red-600">✕</button></div>
+                </li>`).join('');
+
+            document.getElementById('transactions-list').innerHTML = transactionsData.map(t => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/20 transition border-b border-gray-100 dark:border-gray-700/50">
+                    <td class="p-4 text-sm text-gray-500">${t.dateStr}</td>
+                    <td class="p-4 font-medium">${t.desc}</td>
+                    <td class="p-4"><span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-xs rounded-md">${getTranslatedCategory(t.category)}</span></td>
+                    <td class="p-4 font-bold text-right rtl:text-left font-mono text-red-500" dir="ltr">- ${t.amount}</td>
+                    <td class="p-4 text-center"><button data-id="${t.id}" class="del-btn text-gray-400 hover:text-red-500 font-bold">✕</button></td>
+                </tr>`).join('');
+
+            const fixedTotal = monthlyBills.reduce((sum, item) => sum + item.amount, 0) + yearlyFunds.reduce((sum, item) => sum + (item.amount/12), 0);
+            const spentTotal = transactionsData.reduce((sum, item) => sum + item.amount, 0);
+
+            document.getElementById('input-salary').value = salary || '';
+            document.getElementById('display-salary').innerText = salary.toLocaleString();
+            document.getElementById('display-fixed').innerText = fixedTotal.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-remaining').innerText = (salary - fixedTotal - spentTotal).toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            generateAIInsights(salary, fixedTotal, spentTotal);
+            renderChart(fixedTotal, transactionsData);
+        }
+
+        function generateAIInsights(salary, fixedTotal, spentTotal) {
+            const insightEl = document.getElementById('insight-text');
+            const currency = dictionary[currentLang].currency;
+            if(salary === 0) { insightEl.innerText = dictionary[currentLang].insight_empty; return; }
+            if(spentTotal === 0) return; 
+
+            const currentDay = new Date().getDate();
+            const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+            const dailyBurnRate = spentTotal / currentDay;
+            const projectedSpend = dailyBurnRate * daysInMonth;
+            const projectedRemaining = salary - fixedTotal - projectedSpend;
+
+            if(projectedRemaining > 0) {
+                insightEl.innerHTML = `${dictionary[currentLang].surplus_msg} <strong>${projectedRemaining.toFixed(0)} ${currency}</strong>.`;
+            } else {
+                insightEl.innerHTML = `⚠️ <strong>${dictionary[currentLang].warning_overspend} <strong>${Math.abs(projectedRemaining).toFixed(0)} ${currency}</strong>.`;
+            }
+        }
+
+        // --- CHARTING & MISC ---
+        let chartInstance = null;
+        function renderChart(fixedTotal, txs) {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            const categories = {}; categories[dictionary[currentLang].chart_fixed] = fixedTotal;
+            txs.forEach(t => { const catName = getTranslatedCategory(t.category); categories[catName] = (categories[catName] || 0) + t.amount; });
+            const isDark = document.documentElement.classList.contains('dark');
+            chartInstance = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(categories), datasets: [{ data: Object.values(categories), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#64748b'], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#f3f4f6' } }, x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { display: false } } } } });
+        }
+
         document.getElementById('tab-nav-container').addEventListener('click', (e) => {
             if(!e.target.classList.contains('tab-btn')) return;
             const tabId = e.target.getAttribute('data-tab');
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-white', 'dark:bg-gray-700', 'shadow', 'text-primary', 'dark:text-indigo-400');
-                el.classList.add('text-gray-500');
-            });
+            document.querySelectorAll('.tab-btn').forEach(el => { el.classList.remove('bg-white', 'dark:bg-gray-700', 'shadow', 'text-primary', 'dark:text-indigo-400'); el.classList.add('text-gray-500'); });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            e.target.classList.remove('text-gray-500');
-            e.target.classList.add('bg-white', 'dark:bg-gray-700', 'shadow', 'text-primary', 'dark:text-indigo-400');
+            e.target.classList.remove('text-gray-500'); e.target.classList.add('bg-white', 'dark:bg-gray-700', 'shadow', 'text-primary', 'dark:text-indigo-400');
         });
 
-        // --- DATABASE OPERATIONS ---
-        async function safeDBUpdate(action) {
-            if(!currentUser) return alert("You must be logged in.");
-            try { await action(); } 
-            catch(err) { alert(`Firebase Error: ${err.message}\nCheck Firestore rules!`); }
-        }
-
-        document.getElementById('save-salary-btn').addEventListener('click', () => {
-            const val = parseFloat(document.getElementById('input-salary').value);
-            if(!val) return;
-            safeDBUpdate(async () => { await setDoc(doc(db, "users", currentUser.uid), { salary: val }, { merge: true }); });
-        });
-
-        document.getElementById('add-mb-btn').addEventListener('click', () => {
-            const name = document.getElementById('mb-name').value;
-            const amt = parseFloat(document.getElementById('mb-amount').value);
-     
+        document.getElementById('theme-toggle').addEventListener('click', () => { document.documentElement.classList.toggle('dark'); updateUI(); });
+        
+        applyTranslations();
+    </script>
+</body>
+</html>
