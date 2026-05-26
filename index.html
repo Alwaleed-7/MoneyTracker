@@ -17,12 +17,14 @@
         body { transition: background-color 0.3s, color 0.3s; } 
         .hide-scroll::-webkit-scrollbar { display: none; } 
         [dir="rtl"] input, [dir="rtl"] select { text-align: right; }
-        /* Custom range slider styling for cross-browser consistency */
         input[type=range] { accent-color: #4f46e5; }
+        input[type="month"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
+        .dark input[type="month"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans antialiased">
 
+    <!-- Navbar -->
     <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2 text-primary dark:text-indigo-400">
@@ -39,6 +41,7 @@
 
     <main class="max-w-6xl mx-auto p-4 mt-4">
         
+        <!-- ================= AUTH SECTION ================= -->
         <section id="auth-section" class="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-900 dark:text-white" data-i18n="login_title">Welcome Back</h2>
@@ -53,7 +56,9 @@
                 </div>
             </div>
         </section>
-                <section id="dashboard-section" class="hidden">
+        <!-- ================= DASHBOARD SECTION ================= -->
+        <section id="dashboard-section" class="hidden">
+            <!-- Tab Navigation -->
             <div class="flex overflow-x-auto hide-scroll space-x-1 rtl:space-x-reverse bg-gray-200 dark:bg-gray-800 p-1 rounded-xl mb-6 max-w-fit" id="tab-nav-container">
                 <button data-tab="overview" class="tab-btn active px-6 py-2.5 rounded-lg text-sm font-semibold bg-white dark:bg-gray-700 shadow text-primary dark:text-indigo-400 transition whitespace-nowrap" data-i18n="tab_overview">Overview</button>
                 <button data-tab="fixed" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_fixed">Setup & Budgets</button>
@@ -61,27 +66,31 @@
                 <button data-tab="history" class="tab-btn px-6 py-2.5 rounded-lg text-sm font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 transition whitespace-nowrap" data-i18n="tab_history">History</button>
             </div>
 
+            <!-- TAB 1: OVERVIEW -->
             <div id="tab-overview" class="space-y-6 tab-content block">
-                <div class="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium" data-i18n="current_month">Current Month</p>
-                        <h2 id="display-month" class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">--</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mb-1" data-i18n="select_month">Select Month</p>
+                        <input type="month" id="month-selector" class="text-2xl font-bold bg-transparent border-b-2 border-primary outline-none text-gray-900 dark:text-white cursor-pointer pb-1">
                     </div>
-                    <button id="close-month-btn" class="mt-4 md:mt-0 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold px-6 py-2.5 rounded-xl hover:bg-gray-700 dark:hover:bg-gray-200 transition shadow-md" data-i18n="close_month">Close Month & Start New</button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
                         <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="monthly_income">Monthly Income</h3>
-                        <p class="text-3xl font-bold mt-2"><span id="display-salary">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                        <p class="text-2xl font-bold mt-2"><span id="display-salary">0</span> <span class="text-xs text-gray-400" data-i18n="currency">SAR</span></p>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="total_spent">Total Spent & Saved</h3>
-                        <p class="text-3xl font-bold mt-2 text-red-500"><span id="display-spent">0</span> <span class="text-sm text-gray-400" data-i18n="currency">SAR</span></p>
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="total_budgeted">Allocated (Budgets + Yearly)</h3>
+                        <p class="text-2xl font-bold mt-2 text-blue-500"><span id="display-allocated">0</span> <span class="text-xs text-gray-400" data-i18n="currency">SAR</span></p>
                     </div>
-                    <div class="bg-gradient-to-br from-primary to-primaryHover p-6 rounded-2xl shadow-lg text-white relative">
-                        <h3 class="text-sm font-semibold text-indigo-100" data-i18n="total_remaining">Total Remaining Balance</h3>
-                        <p class="text-3xl font-bold mt-2"><span id="display-remaining">0</span> <span class="text-sm text-indigo-200" data-i18n="currency">SAR</span></p>
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                        <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400" data-i18n="total_spent">Actual Spent</h3>
+                        <p class="text-2xl font-bold mt-2 text-red-500"><span id="display-spent">0</span> <span class="text-xs text-gray-400" data-i18n="currency">SAR</span></p>
+                    </div>
+                    <div class="bg-gradient-to-br from-primary to-primaryHover p-5 rounded-2xl shadow-lg text-white relative">
+                        <h3 class="text-sm font-semibold text-indigo-100" data-i18n="total_remaining">Remaining Balance</h3>
+                        <p class="text-2xl font-bold mt-2"><span id="display-remaining">0</span> <span class="text-xs text-indigo-200" data-i18n="currency">SAR</span></p>
                     </div>
                 </div>
 
@@ -97,6 +106,7 @@
                 </div>
             </div>
 
+            <!-- TAB 2: SETUP & BUDGETS -->
             <div id="tab-fixed" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-4 items-end">
                     <div class="flex-1 w-full">
@@ -109,11 +119,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                         <h3 class="text-lg font-bold mb-1 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> <span data-i18n="monthly_bills">Monthly Budgets</span></h3>
-                        <p class="text-xs text-gray-500 mb-4" data-i18n="budget_desc">Set spending limits for categories.</p>
+                        <p class="text-xs text-gray-500 mb-4" data-i18n="budget_desc">Set spending limits. Slider respects unallocated funds.</p>
                         
                         <div class="flex flex-col gap-3 mb-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
                             <div class="flex gap-2">
-                                <input type="text" id="mb-name" placeholder="Category" class="flex-1 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                                <input type="text" id="mb-name" placeholder="..." class="flex-1 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none text-gray-900 dark:text-white">
                                 <input type="number" id="mb-amount" placeholder="SAR limit" class="w-24 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none text-gray-900 dark:text-white">
                                 <button id="add-mb-btn" class="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition disabled:opacity-50">+</button>
                             </div>
@@ -130,7 +140,7 @@
                         <h3 class="text-lg font-bold mb-1 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> <span data-i18n="yearly_funds">Yearly Funds</span></h3>
                         <p class="text-xs text-gray-500 mb-4" data-i18n="yearly_desc">Set aside money monthly for annual payments.</p>
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="yf-name" placeholder="e.g. Car Insurance" class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                            <input type="text" id="yf-name" placeholder="..." class="flex-1 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
                             <input type="number" id="yf-amount" placeholder="Total/Yr" class="w-24 p-2 bg-gray-50 dark:bg-gray-700 border rounded-lg text-sm outline-none text-gray-900 dark:text-white">
                             <button id="add-yf-btn" class="bg-purple-500 text-white px-4 rounded-lg hover:bg-purple-600 transition disabled:opacity-50">+</button>
                         </div>
@@ -138,14 +148,16 @@
                     </div>
                 </div>
             </div>
-                        <div id="tab-transactions" class="space-y-6 tab-content hidden">
+                        <!-- TAB 3: DAILY TRANSACTIONS -->
+            <div id="tab-transactions" class="space-y-6 tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold mb-4" data-i18n="log_expense">Log Daily Expense</h3>
                     <div class="flex flex-col md:flex-row gap-3">
                         <input type="number" id="tx-amount" placeholder="SAR" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
                         <input type="text" id="tx-desc" placeholder="..." class="flex-1 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
                         <select id="tx-category" class="md:w-1/4 p-3 bg-gray-50 dark:bg-gray-700 border rounded-xl outline-none text-gray-900 dark:text-white">
-                            </select>
+                            <!-- Injected by JS -->
+                        </select>
                         <button id="add-tx-btn" class="bg-green-500 text-white font-bold p-3 rounded-xl hover:bg-green-600 transition shadow-lg disabled:opacity-50" data-i18n="add_record">Add Record</button>
                     </div>
                 </div>
@@ -165,17 +177,35 @@
                 </div>
             </div>
 
+            <!-- TAB 4: HISTORY & ADVANCED ANALYTICS -->
             <div id="tab-history" class="space-y-6 tab-content hidden">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="text-lg font-bold mb-4" data-i18n="history_chart">Spending Trends Over Time</h3>
-                    <div class="h-72 w-full relative"><canvas id="historyChart"></canvas></div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Chart 1: Savings vs Spent -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-bold mb-4" data-i18n="history_summary">Monthly Savings vs Spent</h3>
+                        <div class="h-72 w-full relative"><canvas id="historyChart"></canvas></div>
+                    </div>
+                    <!-- Chart 2: Line Categories -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold" data-i18n="history_categories">Category Trends</h3>
+                            <select id="history-category-filter" class="p-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm outline-none text-gray-900 dark:text-white">
+                                <!-- Injected by JS -->
+                            </select>
+                        </div>
+                        <div class="h-72 w-full relative flex-1"><canvas id="categoryHistoryChart"></canvas></div>
+                    </div>
                 </div>
+
+                <!-- History Table -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
                     <table class="w-full text-left border-collapse min-w-[500px]" id="history-table">
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 text-sm border-b border-gray-100 dark:border-gray-600">
                                 <th class="p-4 font-medium" data-i18n="month">Month</th>
-                                <th class="p-4 font-medium text-right rtl:text-left" data-i18n="total_spent">Total Spent</th>
+                                <th class="p-4 font-medium text-right rtl:text-left" data-i18n="total_spent">Actual Spent</th>
+                                <th class="p-4 font-medium text-right rtl:text-left text-primary" data-i18n="savings">Savings</th>
                             </tr>
                         </thead>
                         <tbody id="history-list" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
@@ -204,7 +234,7 @@
         const db = getFirestore(app);
         
         let currentUser = null;
-        let userData = { salary: 0, currentMonth: "", monthlyBills: [], yearlyFunds: [], history: [] };
+        let userData = { salary: 0, currentMonth: "", monthlyBills: [], yearlyFunds: [] };
         let allTransactionsData = []; 
         let activeTransactions = [];  
         let currentLang = 'en';
@@ -225,7 +255,7 @@
             if(!monthStr) return "--";
             const [year, month] = monthStr.split('-');
             const date = new Date(year, parseInt(month)-1);
-            return date.toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US', { month: 'long', year: 'numeric' });
+            return date.toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US', { month: 'short', year: 'numeric' });
         }
 
         // ==========================================
@@ -286,7 +316,7 @@
                             setDoc(userRef, { currentMonth: userData.currentMonth }, {merge: true});
                         }
                     } else {
-                        userData = { salary: 0, currentMonth: getMonthString(), monthlyBills: [], yearlyFunds: [], history: [] };
+                        userData = { salary: 0, currentMonth: getMonthString(), monthlyBills: [], yearlyFunds: [] };
                         setDoc(userRef, userData).catch(err => alert("DB Error"));
                     }
                     filterTransactions(); updateUI(); 
@@ -321,6 +351,11 @@
         // ==========================================
         // 4. DATA ACTIONS
         // ==========================================
+        document.getElementById('month-selector').addEventListener('change', (e) => {
+            const newMonth = e.target.value;
+            if(newMonth) safeDBUpdate(async () => { await setDoc(doc(db, "users", currentUser.uid), { currentMonth: newMonth }, { merge: true }); });
+        });
+
         document.getElementById('save-salary-btn').addEventListener('click', (e) => {
             const val = parseFloat(document.getElementById('input-salary').value);
             if(isNaN(val) || val < 0) return;
@@ -334,9 +369,7 @@
             const newList = [...(userData.monthlyBills || []), { id: Date.now().toString(), name, amount: amt }];
             safeDBUpdate(async () => {
                 await setDoc(doc(db, "users", currentUser.uid), { monthlyBills: newList }, { merge: true });
-                document.getElementById('mb-name').value = ''; 
-                document.getElementById('mb-amount').value = '';
-                document.getElementById('mb-slider').value = 0;
+                document.getElementById('mb-name').value = ''; document.getElementById('mb-amount').value = ''; document.getElementById('mb-slider').value = 0;
             }, e.target);
         });
 
@@ -366,19 +399,6 @@
             }, e.target);
         });
 
-        document.getElementById('close-month-btn').addEventListener('click', (e) => {
-            if(!confirm(currentLang === 'en' ? "Close this month and archive the data?" : "إغلاق هذا الشهر وأرشفة البيانات؟")) return;
-            const spentTotal = activeTransactions.reduce((sum, item) => sum + item.amount, 0);
-            const historyEntry = { month: userData.currentMonth, totalSpent: spentTotal, timestamp: Date.now() };
-            const newHistory = [...(userData.history || []), historyEntry];
-            
-            safeDBUpdate(async () => {
-                await setDoc(doc(db, "users", currentUser.uid), { 
-                    history: newHistory, currentMonth: getMonthString() 
-                }, { merge: true });
-            }, e.target);
-        });
-
         document.getElementById('monthly-list').addEventListener('click', (e) => {
             if(!e.target.classList.contains('del-btn')) return;
             const newList = userData.monthlyBills.filter(item => item.id !== e.target.dataset.id);
@@ -400,34 +420,37 @@
             en: {
                 app_title: "Maliyat", login_title: "Welcome Back", login: "Sign In", signup: "Register", logout: "Logout",
                 tab_overview: "Overview", tab_fixed: "Setup & Budgets", tab_transactions: "Daily Transactions", tab_history: "History",
-                current_month: "Current Month", close_month: "Close Month & Start New",
-                monthly_income: "Monthly Income", total_spent: "Total Spent & Saved", total_remaining: "Total Remaining Balance",
-                available_spend: "Unallocated Money", category_budgets: "Category Budgets", analytics: "Spending Breakdown", 
+                select_month: "Select Month",
+                monthly_income: "Monthly Income", total_budgeted: "Allocated (Budgets + Yearly)", total_spent: "Actual Spent", total_remaining: "Remaining Balance",
+                category_budgets: "Category Budgets", analytics: "Spending Breakdown", 
                 monthly_bills: "Monthly Budgets", budget_desc: "Set spending limits. Slider respects unallocated funds.",
                 yearly_funds: "Yearly Funds", yearly_desc: "Set aside money monthly for annual payments.",
                 log_expense: "Log Daily Expense", save: "Save", add_record: "Add Record",
                 date: "Date", description: "Description", category: "Category", amount: "Amount", salary_label: "Base Salary (Monthly)",
-                currency: "SAR", insight_empty: "Add your salary and log some transactions.",
-                history_chart: "Spending Trends Over Time", month: "Month",
-                cat_other: "Other (Unallocated)", over_budget: "Over Budget!", remaining: "left",
+                currency: "SAR", history_summary: "Monthly Savings vs Spent", history_categories: "Category Trends", month: "Month",
+                savings: "Savings", cat_other: "Other (Unallocated)", all_categories: "All Categories", over_budget: "Over Budget!", remaining: "left",
                 per_month: "per month", total_yr: "Total: {x} SAR/yr"
             },
             ar: {
                 app_title: "ماليات", login_title: "مرحباً بك", login: "تسجيل الدخول", signup: "حساب جديد", logout: "تسجيل خروج",
                 tab_overview: "نظرة عامة", tab_fixed: "إعداد الميزانيات", tab_transactions: "المصروفات اليومية", tab_history: "السجل التاريخي",
-                current_month: "الشهر الحالي", close_month: "إغلاق الشهر وبدء شهر جديد",
-                monthly_income: "الدخل الشهري", total_spent: "إجمالي المصروفات والمدخرات", total_remaining: "إجمالي الرصيد المتبقي",
-                available_spend: "المبلغ غير المخصص", category_budgets: "ميزانية الفئات", analytics: "تحليل المصروفات", 
+                select_month: "اختر الشهر",
+                monthly_income: "الدخل الشهري", total_budgeted: "المخصص (ميزانية + سنوي)", total_spent: "المصروف الفعلي", total_remaining: "الرصيد المتبقي",
+                category_budgets: "ميزانية الفئات", analytics: "تحليل المصروفات", 
                 monthly_bills: "الميزانيات الشهرية", budget_desc: "حدد حدود الصرف. الشريط يحترم الأموال المتبقية.",
                 yearly_funds: "الالتزامات السنوية", yearly_desc: "ادخر شهرياً للدفعات السنوية الكبيرة.",
                 log_expense: "تسجيل مصروف يومي", save: "حفظ", add_record: "إضافة سجل",
                 date: "التاريخ", description: "الوصف", category: "الفئة", amount: "المبلغ", salary_label: "الراتب الأساسي (شهرياً)",
-                currency: "ريال", insight_empty: "أضف راتبك وسجل بعض المصروفات.",
-                history_chart: "اتجاهات الإنفاق بمرور الوقت", month: "الشهر",
-                cat_other: "أخرى (غير مخصص)", over_budget: "تجاوز الميزانية!", remaining: "متبقي",
+                currency: "ريال", history_summary: "المدخرات مقابل المصروفات شهرياً", history_categories: "اتجاهات الفئات", month: "الشهر",
+                savings: "المدخرات", cat_other: "أخرى (غير مخصص)", all_categories: "جميع الفئات", over_budget: "تجاوز الميزانية!", remaining: "متبقي",
                 per_month: "شهرياً", total_yr: "الإجمالي: {x} ريال/سنوياً"
             }
         };
+
+        function getTranslatedCategory(catString) {
+            if(catString === "Other") return dictionary[currentLang].cat_other;
+            return catString; 
+        }
 
         document.getElementById('lang-toggle').addEventListener('click', (e) => {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
@@ -455,12 +478,12 @@
         }
 
         function updateUI() {
-            const { salary = 0, currentMonth = "", monthlyBills = [], yearlyFunds = [], history = [] } = userData;
+            const { salary = 0, currentMonth = "", monthlyBills = [], yearlyFunds = [] } = userData;
             const currency = dictionary[currentLang].currency;
             
-            document.getElementById('display-month').innerText = formatMonthDisplay(currentMonth);
+            document.getElementById('month-selector').value = currentMonth;
 
-            // MATH: Calculate unallocated slider limits
+            // MATH: Calculate limits
             const yearlyFundsMonthlyAlloc = yearlyFunds.reduce((sum, item) => sum + (item.amount/12), 0);
             const monthlyBillsTotal = monthlyBills.reduce((sum, item) => sum + item.amount, 0);
             const totalBudgeted = monthlyBillsTotal + yearlyFundsMonthlyAlloc;
@@ -470,8 +493,7 @@
             document.getElementById('mb-slider').max = unallocatedForBudget;
             document.getElementById('mb-max-label').innerText = unallocatedForBudget.toLocaleString();
             if(parseFloat(document.getElementById('mb-amount').value) > unallocatedForBudget) {
-                document.getElementById('mb-amount').value = unallocatedForBudget;
-                document.getElementById('mb-slider').value = unallocatedForBudget;
+                document.getElementById('mb-amount').value = unallocatedForBudget; document.getElementById('mb-slider').value = unallocatedForBudget;
             }
 
             // Populate Dropdown for Transactions
@@ -492,21 +514,45 @@
                     <div class="flex items-center gap-4 text-right rtl:text-left"><div><span class="text-purple-600 dark:text-purple-400 font-bold font-mono" dir="ltr">${(f.amount/12).toFixed(0)} ${currency}</span><span class="text-xs text-gray-400 block">${dictionary[currentLang].per_month}</span></div><button data-id="${f.id}" class="del-btn text-red-400 hover:text-red-600">✕</button></div>
                 </li>`).join('');
 
-            // Calculate spent per category
+            // Calculate spent per category and build History Logic
             const spentPerCategory = {};
             let dailyTotalSpent = 0;
             activeTransactions.forEach(t => {
                 spentPerCategory[t.category] = (spentPerCategory[t.category] || 0) + t.amount;
                 dailyTotalSpent += t.amount;
             });
+            
+            const historyMap = {}; 
+            const categoryHistoryMap = {}; 
+            const uniqueCategories = new Set();
 
-            // Create 'Other' pseudo-category for Budget Progress
+            allTransactionsData.forEach(t => {
+                historyMap[t.month] = (historyMap[t.month] || 0) + t.amount;
+                if(!categoryHistoryMap[t.month]) categoryHistoryMap[t.month] = {};
+                categoryHistoryMap[t.month][t.category] = (categoryHistoryMap[t.month][t.category] || 0) + t.amount;
+                uniqueCategories.add(t.category);
+            });
+
+            // Populate Line Chart Category Filter Dropdown safely
+            const historyFilter = document.getElementById('history-category-filter');
+            const currentFilterVal = historyFilter.value || "All";
+            let filterOptions = `<option value="All">${dictionary[currentLang].all_categories}</option>`;
+            uniqueCategories.forEach(cat => { filterOptions += `<option value="${cat}">${getTranslatedCategory(cat)}</option>`; });
+            historyFilter.innerHTML = filterOptions;
+            if(Array.from(historyFilter.options).some(opt => opt.value === currentFilterVal)) historyFilter.value = currentFilterVal;
+
+            const dynamicHistory = Object.keys(historyMap).map(m => {
+                const totalMSpent = historyMap[m];
+                const monthlySavings = Math.max(0, salary - totalMSpent - yearlyFundsMonthlyAlloc);
+                return { month: m, totalSpent: totalMSpent, savings: monthlySavings };
+            });
+
+            // Budget Progress Bars
             const allProgressBars = [...monthlyBills];
             if(unallocatedForBudget > 0 || (spentPerCategory["Other"] > 0)) {
                 allProgressBars.push({ name: "Other", amount: unallocatedForBudget, isOther: true });
             }
 
-            // Render Budget Progress Bars (Now including 'Other')
             document.getElementById('budget-progress-container').innerHTML = allProgressBars.map(b => {
                 const displayName = b.isOther ? dictionary[currentLang].cat_other : b.name;
                 const spent = spentPerCategory[b.isOther ? "Other" : b.name] || 0;
@@ -531,59 +577,48 @@
                 </div>`;
             }).join('');
 
-            // Render Transactions List
+            // Lists
             document.getElementById('transactions-list').innerHTML = activeTransactions.map(t => {
-                let displayCat = t.category === "Other" ? dictionary[currentLang].cat_other : t.category;
                 return `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/20 transition border-b border-gray-100 dark:border-gray-700/50">
                     <td class="p-4 text-sm text-gray-500">${t.dateStr}</td>
                     <td class="p-4 font-medium">${t.desc}</td>
-                    <td class="p-4"><span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-xs rounded-md">${displayCat}</span></td>
+                    <td class="p-4"><span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-xs rounded-md">${getTranslatedCategory(t.category)}</span></td>
                     <td class="p-4 font-bold text-right rtl:text-left font-mono text-red-500" dir="ltr">- ${t.amount}</td>
                     <td class="p-4 text-center"><button data-id="${t.id}" class="del-btn text-gray-400 hover:text-red-500 font-bold">✕</button></td>
                 </tr>`;
             }).join('');
 
-            // Render History List
-            document.getElementById('history-list').innerHTML = history.sort((a,b) => b.month.localeCompare(a.month)).map(h => `
+            document.getElementById('history-list').innerHTML = dynamicHistory.sort((a,b) => b.month.localeCompare(a.month)).map(h => `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/20 transition border-b border-gray-100 dark:border-gray-700/50">
                     <td class="p-4 font-medium">${formatMonthDisplay(h.month)}</td>
                     <td class="p-4 font-bold text-right rtl:text-left font-mono text-gray-700 dark:text-gray-200" dir="ltr">${h.totalSpent.toLocaleString()} ${currency}</td>
+                    <td class="p-4 font-bold text-right rtl:text-left font-mono text-primary" dir="ltr">+ ${h.savings.toLocaleString()} ${currency}</td>
                 </tr>`).join('');
 
             // Top Dashboard Metrics
-            const totalAllocatedAndSpent = dailyTotalSpent + yearlyFundsMonthlyAlloc;
-            const remainingOverall = salary - totalAllocatedAndSpent;
+            const remainingCash = salary - yearlyFundsMonthlyAlloc - dailyTotalSpent;
 
             document.getElementById('input-salary').value = salary || '';
             document.getElementById('display-salary').innerText = salary.toLocaleString();
-            document.getElementById('display-spent').innerText = totalAllocatedAndSpent.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('display-remaining').innerText = remainingOverall.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-allocated').innerText = totalBudgeted.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-spent').innerText = dailyTotalSpent.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('display-remaining').innerText = remainingCash.toLocaleString(undefined, {maximumFractionDigits: 0});
             
             renderOverviewChart(spentPerCategory, yearlyFundsMonthlyAlloc);
-            renderHistoryChart(history);
+            renderHistoryCharts(dynamicHistory, categoryHistoryMap, uniqueCategories);
         }
 
         let expenseChartInst = null;
         let historyChartInst = null;
+        let catHistoryChartInst = null;
 
         function renderOverviewChart(spentMap, yearlyAlloc) {
             const ctx = document.getElementById('expenseChart').getContext('2d');
             if (expenseChartInst) expenseChartInst.destroy();
-            
-            const labels = [];
-            const data = [];
-            
-            // Map raw names to Translated Names for the Chart
-            Object.keys(spentMap).forEach(key => {
-                labels.push(key === "Other" ? dictionary[currentLang].cat_other : key);
-                data.push(spentMap[key]);
-            });
-
-            if(yearlyAlloc > 0) { 
-                labels.push(dictionary[currentLang].yearly_funds); 
-                data.push(yearlyAlloc); 
-            }
+            const labels = []; const data = [];
+            Object.keys(spentMap).forEach(key => { labels.push(getTranslatedCategory(key)); data.push(spentMap[key]); });
+            if(yearlyAlloc > 0) { labels.push(dictionary[currentLang].yearly_funds); data.push(yearlyAlloc); }
             
             const isDark = document.documentElement.classList.contains('dark');
             expenseChartInst = new Chart(ctx, { 
@@ -593,21 +628,60 @@
             });
         }
 
-        function renderHistoryChart(historyArr) {
-            const ctx = document.getElementById('historyChart').getContext('2d');
-            if (historyChartInst) historyChartInst.destroy();
+        function renderHistoryCharts(historyArr, catMap, uniqueCatSet) {
+            const isDark = document.documentElement.classList.contains('dark');
             const sortedHistory = [...historyArr].sort((a,b) => a.month.localeCompare(b.month));
             const labels = sortedHistory.map(h => formatMonthDisplay(h.month));
-            const data = sortedHistory.map(h => h.totalSpent);
-            const isDark = document.documentElement.classList.contains('dark');
-            historyChartInst = new Chart(ctx, { 
+            
+            // 1. Savings vs Spent Bar Chart
+            const ctx1 = document.getElementById('historyChart').getContext('2d');
+            if (historyChartInst) historyChartInst.destroy();
+            historyChartInst = new Chart(ctx1, { 
                 type: 'bar', 
-                data: { labels, datasets: [{ label: dictionary[currentLang].total_spent, data, backgroundColor: '#4f46e5', borderRadius: 4 }] }, 
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#f3f4f6' } }, x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { display: false } } } } 
+                data: { 
+                    labels, 
+                    datasets: [
+                        { label: dictionary[currentLang].total_spent, data: sortedHistory.map(h => h.totalSpent), backgroundColor: '#ef4444', borderRadius: 4 },
+                        { label: dictionary[currentLang].savings, data: sortedHistory.map(h => h.savings), backgroundColor: '#10b981', borderRadius: 4 }
+                    ] 
+                }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: isDark ? '#d1d5db' : '#374151' } } }, scales: { y: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#f3f4f6' } }, x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { display: false } } } } 
+            });
+
+            // 2. Line Category Trend Chart
+            const ctx2 = document.getElementById('categoryHistoryChart').getContext('2d');
+            if (catHistoryChartInst) catHistoryChartInst.destroy();
+            
+            const selectedCat = document.getElementById('history-category-filter').value;
+            const categoryColors = ['#4f46e5', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6', '#9ca3af'];
+            
+            let categoriesToRender = Array.from(uniqueCatSet);
+            if (selectedCat !== "All" && uniqueCatSet.has(selectedCat)) {
+                categoriesToRender = [selectedCat];
+            }
+
+            const datasets = categoriesToRender.map((catName) => {
+                const catData = sortedHistory.map(h => catMap[h.month][catName] || 0);
+                const colorIndex = Array.from(uniqueCatSet).indexOf(catName) % categoryColors.length;
+                return { 
+                    label: getTranslatedCategory(catName), 
+                    data: catData, 
+                    borderColor: categoryColors[colorIndex], 
+                    backgroundColor: categoryColors[colorIndex], 
+                    tension: 0.3, borderWidth: 2, pointRadius: 4, fill: false 
+                };
+            });
+
+            catHistoryChartInst = new Chart(ctx2, {
+                type: 'line',
+                data: { labels, datasets },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: isDark ? '#d1d5db' : '#374151' } } }, scales: { y: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#f3f4f6' } }, x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { display: false } } } }
             });
         }
 
-        // --- Tabs & Theme ---
+        // --- Event Listeners ---
+        document.getElementById('history-category-filter').addEventListener('change', updateUI);
+
         document.getElementById('tab-nav-container').addEventListener('click', (e) => {
             if(!e.target.classList.contains('tab-btn')) return;
             const tabId = e.target.getAttribute('data-tab');
